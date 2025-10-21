@@ -2,15 +2,15 @@ import { AuthenticationService } from "../model.service/AuthenticationService";
 import { AuthToken } from "tweeter-shared";
 import { MessageView, Presenter, View } from "./Presenter";
 
-export interface LogoutView extends MessageView {
+export interface AppNavbarView extends MessageView {
   clearUserInfo: () => void;
   navigate: (path: string) => void;
 }
   
-export class LogoutPresenter extends Presenter<LogoutView> {
+export class AppNavbarPresenter extends Presenter<AppNavbarView> {
     private service: AuthenticationService
 
-    public constructor(view: LogoutView) {
+    public constructor(view: AppNavbarView) {
         super(view);
         this.service = new AuthenticationService();
     }
