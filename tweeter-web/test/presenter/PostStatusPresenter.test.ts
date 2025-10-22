@@ -1,6 +1,6 @@
 import { AuthToken, User } from "tweeter-shared";
 import { PostStatusPresenter, PostStatusView } from "../../src/presenter/PostStatusPresenter";
-import { anything, instance, mock, spy, verify, when } from "@typestrong/ts-mockito"
+import { anything, capture, instance, mock, spy, verify, when } from "@typestrong/ts-mockito"
 import { StatusService } from "../../src/model.service/StatusService";
 
 describe("PostStatusPresenter", () => {
@@ -32,5 +32,22 @@ describe("PostStatusPresenter", () => {
     it("calls postStatus on the status service with the correct status and auth token", async () => {
         await postStatusPresenter.submitPost("Hello World!", testUser, authToken);
         verify(mockStatusService.postStatus(authToken, anything())).once();
+    });
+
+    it("the presenter tells the view to clear the info message that was displayed previously, clear the post, and display a status posted message, when successful.", async () => {
+        await postStatusPresenter.submitPost("Hello World!", testUser, authToken);
+
+        verify(mockPostStatusView.deleteMessage("toast-id")).once();
+        verify(mockPostStatusView.setPost("")).once();
+        verify(mockPostStatusView.displayInfoMessage("Status posted!", 2000)).once();
+    });
+
+    it("the presenter tells the view to display an error message and does not tell it to clear the info message or clear the post when unsuccessful.", async () => {
+        when(mockStatusService.postStatus(anything(), anything())).thenReject(new Error("Post failed"));
+        await postStatusPresenter.submitPost("Hello World!", testUser, authToken);
+
+        verify(mockPostStatusView.displayErrorMessage("Failed to post the status because of exception: Error: Post failed")).once();
+        verify(mockPostStatusView.deleteMessage(anything())).never();
+        verify(mockPostStatusView.setPost("")).never();
     });
 });
