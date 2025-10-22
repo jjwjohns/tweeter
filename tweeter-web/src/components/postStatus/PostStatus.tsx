@@ -1,10 +1,14 @@
 import "./PostStatus.css";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useMessageActions } from "../toaster/MessageHooks";
 import { useUserInfo } from "../userInfo/UserInfoHooks";
 import { PostStatusPresenter } from "../../presenter/PostStatusPresenter";
 
-const PostStatus = () => {
+interface Props {
+  presenter?: PostStatusPresenter;
+}
+
+const PostStatus = (props: Props) => {
   const { displayInfoMessage, displayErrorMessage, deleteMessage } = useMessageActions();
 
   const { currentUser, authToken } = useUserInfo();
@@ -21,8 +25,11 @@ const PostStatus = () => {
     getCurrentUser: () => currentUser,
     getAuthToken: () => authToken
   };
-  
-  const presenter = new PostStatusPresenter(view);
+
+  const presenterRef = useRef<PostStatusPresenter | null>(null);
+  if (!presenterRef.current) {
+    presenterRef.current = props.presenter ?? new PostStatusPresenter(view);
+  }
 
   const clearPost = (event: React.MouseEvent) => {
     event.preventDefault();
@@ -35,7 +42,7 @@ const PostStatus = () => {
 
   const submitPost = (event: React.MouseEvent) => {
     event.preventDefault();
-    presenter.submitPost(post, currentUser, authToken);
+    presenterRef.current?.submitPost(post, currentUser, authToken);
   };
 
   return (
@@ -44,6 +51,7 @@ const PostStatus = () => {
         <textarea
           className="form-control"
           id="postStatusTextArea"
+          aria-label="postField"
           rows={10}
           placeholder="What's on your mind?"
           value={post}
@@ -55,6 +63,7 @@ const PostStatus = () => {
       <div className="form-group">
         <button
           id="postStatusButton"
+          data-testid="post-status-btn"
           className="btn btn-md btn-primary me-1"
           type="button"
           disabled={checkButtonStatus()}
@@ -73,6 +82,7 @@ const PostStatus = () => {
         </button>
         <button
           id="clearStatusButton"
+          data-testid="clear-status-btn"
           className="btn btn-md btn-secondary"
           type="button"
           disabled={checkButtonStatus()}

@@ -1,0 +1,9 @@
+{
+  // Tell the Jest VS Code extension to run the same command as your package.json script
+  "jest.jestCommandLine": "npm run test --",
+  // Make sure it doesn't try to watch independently
+  "jest.runMode": "on-demand",
+  // Optional quality of life
+  "jest.rootPath": "tweeter-web", 
+  "jest.debugMode": true
+}
