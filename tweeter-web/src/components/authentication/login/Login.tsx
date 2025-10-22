@@ -1,9 +1,9 @@
 import "./Login.css";
 import "bootstrap/dist/css/bootstrap.css";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import AuthenticationFormLayout from "../AuthenticationFormLayout";
-import { AuthToken, FakeData, User } from "tweeter-shared";
+import { AuthToken, User } from "tweeter-shared";
 import AuthenticationFields from "../AuthenticationFields";
 import { useMessageActions } from "../../toaster/MessageHooks";
 import { useUserInfoActions } from "../../userInfo/UserInfoHooks";
@@ -11,6 +11,7 @@ import { LoginPresenter, LoginView } from "../../../presenter/LoginPresenter";
 
 interface Props {
   originalUrl?: string;
+  presenter?: LoginPresenter;
 }
 
 const Login = (props: Props) => {
@@ -38,16 +39,19 @@ const Login = (props: Props) => {
     }
   };
 
-  const loginPresenter = new LoginPresenter(view);
+  const presenterRef = useRef<LoginPresenter | null>(null);
+  if (!presenterRef.current) {
+    presenterRef.current = props.presenter ?? new LoginPresenter(view);
+  }
 
   const loginOnEnter = async (event: React.KeyboardEvent<HTMLElement>) => {
     if (event.key == "Enter" && !checkSubmitButtonStatus()) {
-      await loginPresenter.doLogin(alias, password, rememberMe, props.originalUrl);
+      await presenterRef.current?.doLogin(alias, password, rememberMe, props.originalUrl);
     }
   };
 
   const handleSubmit = useCallback(
-    async () => await loginPresenter.doLogin(alias, password, rememberMe, props.originalUrl),
+    async () => await presenterRef.current?.doLogin(alias, password, rememberMe, props.originalUrl),
     [alias, password, rememberMe, props.originalUrl]
   );
 
@@ -64,6 +68,10 @@ const Login = (props: Props) => {
       </div>
     );
   };
+
+  useEffect(() => {
+    presenterRef.current = props.presenter ?? new LoginPresenter(view);
+  }, [rememberMe]);
 
   return (
     <AuthenticationFormLayout
