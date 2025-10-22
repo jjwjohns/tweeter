@@ -8,12 +8,16 @@ export interface AppNavbarView extends MessageView {
 }
   
 export class AppNavbarPresenter extends Presenter<AppNavbarView> {
-    private service: AuthenticationService
+  private _service: AuthenticationService
 
-    public constructor(view: AppNavbarView) {
-        super(view);
-        this.service = new AuthenticationService();
-    }
+  public constructor(view: AppNavbarView) {
+      super(view);
+      this._service = new AuthenticationService();
+  }
+
+  public get service() {
+    return this._service;
+  }
   
   public async logOut (authToken: AuthToken) {
     const loggingOutToastId = this.view.displayInfoMessage("Logging Out...", 0);

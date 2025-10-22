@@ -11,10 +11,14 @@ export interface PostStatusView extends MessageView{
 }
 
 export class PostStatusPresenter extends Presenter<PostStatusView> {
-    private service = new StatusService();
+    private _service = new StatusService();
 
     public constructor(view: PostStatusView) {
         super(view);
+    }
+
+    public get service() {
+        return this._service;
     }
 
     public async submitPost(post: string, currentUser: User | null, authToken: AuthToken | null) {
