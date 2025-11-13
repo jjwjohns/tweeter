@@ -1,11 +1,15 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.handler = void 0;
-const handler = async (event) => {
+const FollowService_1 = require("../../model/service/FollowService");
+const handler = async (request) => {
+    const followService = new FollowService_1.FollowService();
+    const [items, hasMore] = await followService.loadMoreFollowers(request.token, request.userAlias, request.pageSize, request.lastItem || null);
     return {
         success: true,
-        message: "Handler reached: getFollowersFunction",
-        inputEvent: event,
+        message: null,
+        items: items,
+        hasMore: hasMore,
     };
 };
 exports.handler = handler;
