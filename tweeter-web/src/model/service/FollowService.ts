@@ -4,6 +4,7 @@ import {
   PagedUserItemRequest,
   PagedUserItemResponse,
   TokenUserRequest,
+  TokenUserSelectedUserRequest,
   User,
   UserDto,
 } from "tweeter-shared";
@@ -52,24 +53,43 @@ export class FollowService implements Service {
     user: User,
     selectedUser: User
   ): Promise<boolean> {
-    // TODO: Replace with the result of calling server
-    return FakeData.instance.isFollower();
+    const request: TokenUserSelectedUserRequest = {
+      token: authToken ? authToken.token : "",
+      user: user.dto,
+      selectedUser: selectedUser.dto,
+    };
+
+    const response = await this.server.getIsFollowerStatus(request);
+
+    return response.isFollower;
   }
 
   public async getFolloweeCount(
     authToken: AuthToken,
     user: User
   ): Promise<number> {
-    // TODO: Replace with the result of calling server
-    return FakeData.instance.getFolloweeCount(user.alias);
+    const request: TokenUserRequest = {
+      token: authToken ? authToken.token : "",
+      selectedUser: user.dto,
+    };
+
+    const response = await this.server.getFolloweeCount(request);
+
+    return response.number;
   }
 
   public async getFollowerCount(
     authToken: AuthToken,
     user: User
   ): Promise<number> {
-    // TODO: Replace with the result of calling server
-    return FakeData.instance.getFollowerCount(user.alias);
+    const request: TokenUserRequest = {
+      token: authToken ? authToken.token : "",
+      selectedUser: user.dto,
+    };
+
+    const response = await this.server.getFollowerCount(request);
+
+    return response.number;
   }
 
   public async follow(

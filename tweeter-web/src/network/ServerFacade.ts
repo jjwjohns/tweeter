@@ -1,8 +1,11 @@
 import {
   FollowerFolloweeCountResponse,
+  NumberResponse,
   PagedUserItemRequest,
   PagedUserItemResponse,
   TokenUserRequest,
+  TokenUserSelectedUserRequest,
+  IsFollowerResponse,
   User,
   UserDto,
 } from "tweeter-shared";
@@ -91,6 +94,54 @@ export class ServerFacade {
       TokenUserRequest,
       FollowerFolloweeCountResponse
     >(request, "/unfollow");
+
+    if (response.success) {
+      return response;
+    } else {
+      console.error(response);
+      throw new Error(response.message ?? undefined);
+    }
+  }
+
+  public async getFollowerCount(
+    request: TokenUserRequest
+  ): Promise<NumberResponse> {
+    const response = await this.clientCommunicator.doPost<
+      TokenUserRequest,
+      NumberResponse
+    >(request, "/getfollowerscount");
+
+    if (response.success) {
+      return response;
+    } else {
+      console.error(response);
+      throw new Error(response.message ?? undefined);
+    }
+  }
+
+  public async getFolloweeCount(
+    request: TokenUserRequest
+  ): Promise<NumberResponse> {
+    const response = await this.clientCommunicator.doPost<
+      TokenUserRequest,
+      NumberResponse
+    >(request, "/getfolloweecount");
+
+    if (response.success) {
+      return response;
+    } else {
+      console.error(response);
+      throw new Error(response.message ?? undefined);
+    }
+  }
+
+  public async getIsFollowerStatus(
+    request: TokenUserSelectedUserRequest
+  ): Promise<IsFollowerResponse> {
+    const response = await this.clientCommunicator.doPost<
+      TokenUserSelectedUserRequest,
+      IsFollowerResponse
+    >(request, "/getisfollowerstatus");
 
     if (response.success) {
       return response;

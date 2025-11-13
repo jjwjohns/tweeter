@@ -20,6 +20,7 @@ export type { FollowerFolloweeCountResponse } from "./model/net/response/Followe
 export type { TokenUserRequest } from "./model/net/request/TokenUserRequest";
 export type { TokenUserSelectedUserRequest } from "./model/net/request/TokenUserSelectedUserRequest";
 export type { NumberResponse } from "./model/net/response/NumberResponse";
+export type { IsFollowerResponse } from "./model/net/response/IsFollowerResponse";
 
 // Utility exports
 export { FakeData } from "./util/FakeData";
