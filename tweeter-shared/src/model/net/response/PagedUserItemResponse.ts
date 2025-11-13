@@ -1,4 +1,3 @@
-import { User } from "../../domain/User";
 import { UserDto } from "../../dto/UserDto";
 import { TweeterResponse } from "./TweeterResponse";
 

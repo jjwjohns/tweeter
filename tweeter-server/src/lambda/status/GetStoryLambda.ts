@@ -1,7 +1,23 @@
-export const handler = async (event: any) => {
+import { PagedStatusItemRequest } from "tweeter-shared";
+import { PagedStatusItemResponse } from "tweeter-shared";
+import { StatusService } from "../../model/service/StatusService";
+
+export const handler = async (
+  request: PagedStatusItemRequest
+): Promise<PagedStatusItemResponse> => {
+  const statusService = new StatusService();
+
+  const [items, hasMore] = await statusService.loadMoreStoryItems(
+    request.token,
+    request.userAlias,
+    request.pageSize,
+    request.lastItem || null
+  );
+
   return {
     success: true,
-    message: "Handler reached: loadMoreStoryItemsFunction",
-    inputEvent: event,
+    message: null,
+    items: items,
+    hasMore: hasMore,
   };
 };
