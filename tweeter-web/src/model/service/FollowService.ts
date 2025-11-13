@@ -3,6 +3,7 @@ import {
   FakeData,
   PagedUserItemRequest,
   PagedUserItemResponse,
+  TokenUserRequest,
   User,
   UserDto,
 } from "tweeter-shared";
@@ -75,35 +76,27 @@ export class FollowService implements Service {
     authToken: AuthToken,
     userToFollow: User
   ): Promise<[followerCount: number, followeeCount: number]> {
-    // Pause so we can see the unfollow message. Remove when connected to the server
-    await new Promise((f) => setTimeout(f, 2000));
+    const request: TokenUserRequest = {
+      token: authToken ? authToken.token : "",
+      selectedUser: userToFollow.dto,
+    };
 
-    // TODO: Call the server
+    const response = await this.server.follow(request);
 
-    const followerCount = await this.getFollowerCount(authToken, userToFollow);
-    const followeeCount = await this.getFolloweeCount(authToken, userToFollow);
-
-    return [followerCount, followeeCount];
+    return [response.followerCount, response.followeeCount];
   }
 
   public async unfollow(
     authToken: AuthToken,
     userToUnfollow: User
   ): Promise<[followerCount: number, followeeCount: number]> {
-    // Pause so we can see the unfollow message. Remove when connected to the server
-    await new Promise((f) => setTimeout(f, 2000));
+    const request: TokenUserRequest = {
+      token: authToken ? authToken.token : "",
+      selectedUser: userToUnfollow.dto,
+    };
 
-    // TODO: Call the server
+    const response = await this.server.unfollow(request);
 
-    const followerCount = await this.getFollowerCount(
-      authToken,
-      userToUnfollow
-    );
-    const followeeCount = await this.getFolloweeCount(
-      authToken,
-      userToUnfollow
-    );
-
-    return [followerCount, followeeCount];
+    return [response.followerCount, response.followeeCount];
   }
 }

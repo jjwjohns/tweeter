@@ -16,6 +16,10 @@ export type { PagedUserItemRequest } from "./model/net/request/PagedUsertItemReq
 export type { PagedUserItemResponse } from "./model/net/response/PagedUserItemResponse";
 export type { TweeterRequest } from "./model/net/request/TweeterRequest";
 export type { TweeterResponse } from "./model/net/response/TweeterResponse";
+export type { FollowerFolloweeCountResponse } from "./model/net/response/FollowerFolloweeCountResponse";
+export type { TokenUserRequest } from "./model/net/request/TokenUserRequest";
+export type { TokenUserSelectedUserRequest } from "./model/net/request/TokenUserSelectedUserRequest";
+export type { NumberResponse } from "./model/net/response/NumberResponse";
 
 // Utility exports
 export { FakeData } from "./util/FakeData";

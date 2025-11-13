@@ -1,6 +1,8 @@
 import {
+  FollowerFolloweeCountResponse,
   PagedUserItemRequest,
   PagedUserItemResponse,
+  TokenUserRequest,
   User,
   UserDto,
 } from "tweeter-shared";
@@ -60,6 +62,38 @@ export class ServerFacade {
       } else {
         return [items, response.hasMore];
       }
+    } else {
+      console.error(response);
+      throw new Error(response.message ?? undefined);
+    }
+  }
+
+  public async follow(
+    request: TokenUserRequest
+  ): Promise<FollowerFolloweeCountResponse> {
+    const response = await this.clientCommunicator.doPost<
+      TokenUserRequest,
+      FollowerFolloweeCountResponse
+    >(request, "/follow");
+
+    if (response.success) {
+      return response;
+    } else {
+      console.error(response);
+      throw new Error(response.message ?? undefined);
+    }
+  }
+
+  public async unfollow(
+    request: TokenUserRequest
+  ): Promise<FollowerFolloweeCountResponse> {
+    const response = await this.clientCommunicator.doPost<
+      TokenUserRequest,
+      FollowerFolloweeCountResponse
+    >(request, "/unfollow");
+
+    if (response.success) {
+      return response;
     } else {
       console.error(response);
       throw new Error(response.message ?? undefined);
