@@ -18,11 +18,11 @@ import { StoryPresenter } from "./presenter/StoryPresenter";
 import { FeedPresenter } from "./presenter/FeedPresenter";
 import { PageItemPresenter, PageItemView } from "./presenter/PageItemPresenter";
 import { Status, User } from "tweeter-shared";
-import { StatusService } from "./model.service/StatusService";
+import { StatusService } from "./model/service/StatusService";
 import StatusItem from "./components/statusItem/StatusItem";
 import UserItem from "./components/userItem/UserItem";
-import { FollowService } from "./model.service/FollowService";
-import { Service } from "./model.service/Service";
+import { FollowService } from "./model/service/FollowService";
+import { Service } from "./model/service/Service";
 
 const App = () => {
   const { currentUser, authToken } = useUserInfo();
@@ -49,7 +49,9 @@ function makeItemRoute<TItem, TService extends Service>(
   path: string,
   featurePath: string,
   displayedUserAlias: string,
-  presenterFactory: (view: PageItemView<TItem>) => PageItemPresenter<TItem, TService>,
+  presenterFactory: (
+    view: PageItemView<TItem>
+  ) => PageItemPresenter<TItem, TService>,
   ItemComponent: React.ComponentType<{ item: TItem; featurePath: string }>
 ) {
   return (
@@ -74,7 +76,10 @@ const AuthenticatedRoutes = () => {
   return (
     <Routes>
       <Route element={<MainLayout />}>
-        <Route index element={<Navigate to={`/feed/${displayedUser!.alias}`} />} />
+        <Route
+          index
+          element={<Navigate to={`/feed/${displayedUser!.alias}`} />}
+        />
         {makeItemRoute(
           "feed",
           "/feed",
@@ -104,11 +109,14 @@ const AuthenticatedRoutes = () => {
           UserItem
         )}
         <Route path="logout" element={<Navigate to="/login" />} />
-        <Route path="*" element={<Navigate to={`/feed/${displayedUser!.alias}`} />} />
+        <Route
+          path="*"
+          element={<Navigate to={`/feed/${displayedUser!.alias}`} />}
+        />
       </Route>
     </Routes>
   );
-}; 
+};
 
 const UnauthenticatedRoutes = () => {
   const location = useLocation();

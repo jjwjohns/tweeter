@@ -1,5 +1,5 @@
 import { Presenter, View } from "./Presenter";
-import { AuthenticationService } from "../model.service/AuthenticationService";
+import { AuthenticationService } from "../model/service/AuthenticationService";
 import { User, AuthToken } from "tweeter-shared";
 
 export interface AuthenticationView extends View {
@@ -13,7 +13,9 @@ export interface AuthenticationView extends View {
   navigate: (path: string) => void;
 }
 
-export class AuthenticationPresenter<V extends AuthenticationView> extends Presenter<V> {
+export class AuthenticationPresenter<
+  V extends AuthenticationView
+> extends Presenter<V> {
   protected service = new AuthenticationService();
 
   public constructor(view: V) {

@@ -3,8 +3,11 @@ import InfiniteScroll from "react-infinite-scroll-component";
 import { useParams } from "react-router-dom";
 import { useMessageActions } from "../toaster/MessageHooks";
 import { useUserInfo, useUserInfoActions } from "../userInfo/UserInfoHooks";
-import { PageItemPresenter, PageItemView } from "../../presenter/PageItemPresenter";
-import { Service } from "../../model.service/Service";
+import {
+  PageItemPresenter,
+  PageItemView,
+} from "../../presenter/PageItemPresenter";
+import { Service } from "../../model/service/Service";
 
 function ItemScroller<TItem, TService extends Service>({
   featurePath,
@@ -12,11 +15,11 @@ function ItemScroller<TItem, TService extends Service>({
   ItemComponent,
 }: {
   featurePath: string;
-  presenterFactory: (view: PageItemView<TItem>) => PageItemPresenter<TItem, TService>;
+  presenterFactory: (
+    view: PageItemView<TItem>
+  ) => PageItemPresenter<TItem, TService>;
   ItemComponent: React.ComponentType<{ item: TItem; featurePath: string }>;
-}) 
-
-{
+}) {
   const { displayErrorMessage } = useMessageActions();
   const [items, setItems] = useState<TItem[]>([]);
 
@@ -28,7 +31,7 @@ function ItemScroller<TItem, TService extends Service>({
     addItems: (newItems: TItem[]) =>
       setItems((previousItems) => [...previousItems, ...newItems]),
 
-    displayErrorMessage: displayErrorMessage
+    displayErrorMessage: displayErrorMessage,
   };
 
   const presenterRef = useRef<PageItemPresenter<TItem, TService> | null>(null);
@@ -43,11 +46,13 @@ function ItemScroller<TItem, TService extends Service>({
       displayedUserAliasParam &&
       displayedUserAliasParam != displayedUser!.alias
     ) {
-      presenterRef.current!.getUser(authToken!, displayedUserAliasParam!).then((toUser) => {
-        if (toUser) {
-          setDisplayedUser(toUser);
-        }
-      });
+      presenterRef
+        .current!.getUser(authToken!, displayedUserAliasParam!)
+        .then((toUser) => {
+          if (toUser) {
+            setDisplayedUser(toUser);
+          }
+        });
     }
   }, [displayedUserAliasParam]);
 

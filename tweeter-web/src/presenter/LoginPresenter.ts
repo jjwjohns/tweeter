@@ -1,11 +1,12 @@
 import { User, AuthToken } from "tweeter-shared";
-import { AuthenticationService } from "../model.service/AuthenticationService";
+import { AuthenticationService } from "../model/service/AuthenticationService";
 import { Presenter, View } from "./Presenter";
-import { AuthenticationPresenter, AuthenticationView } from "./AuthenticationPresenter";
+import {
+  AuthenticationPresenter,
+  AuthenticationView,
+} from "./AuthenticationPresenter";
 
-
-export interface LoginView extends AuthenticationView{
-}
+export interface LoginView extends AuthenticationView {}
 
 export class LoginPresenter extends AuthenticationPresenter<LoginView> {
   public async doLogin(

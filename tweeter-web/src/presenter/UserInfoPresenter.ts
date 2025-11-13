@@ -1,5 +1,5 @@
 import { AuthToken, User } from "tweeter-shared";
-import { FollowService } from "../model.service/FollowService";
+import { FollowService } from "../model/service/FollowService";
 import { MessageView, Presenter, View } from "./Presenter";
 
 export interface UserInfoView extends MessageView {
@@ -32,32 +32,43 @@ export class UserInfoPresenter extends Presenter<UserInfoView> {
     await this.setNumbFollowers(authToken, displayedUser);
   }
 
-  public async setIsFollowerStatus(authToken: AuthToken, currentUser: User, displayedUser: User) {
+  public async setIsFollowerStatus(
+    authToken: AuthToken,
+    currentUser: User,
+    displayedUser: User
+  ) {
     await this.doFailureRecordingOperation(async () => {
-        if (currentUser.equals(displayedUser)) {
+      if (currentUser.equals(displayedUser)) {
         this.view.setIsFollower(false);
       } else {
-        const isFollower = await this.service.getIsFollowerStatus(authToken, currentUser, displayedUser);
+        const isFollower = await this.service.getIsFollowerStatus(
+          authToken,
+          currentUser,
+          displayedUser
+        );
         this.view.setIsFollower(isFollower);
       }
-    },
-    "determine follower status");
+    }, "determine follower status");
   }
 
   public async setNumbFollowees(authToken: AuthToken, displayedUser: User) {
     await this.doFailureRecordingOperation(async () => {
-      const count = await this.service.getFolloweeCount(authToken, displayedUser);
+      const count = await this.service.getFolloweeCount(
+        authToken,
+        displayedUser
+      );
       this.view.setFolloweeCount(count);
-    },
-    "get followee count");
+    }, "get followee count");
   }
 
   public async setNumbFollowers(authToken: AuthToken, displayedUser: User) {
     await this.doFailureRecordingOperation(async () => {
-      const count = await this.service.getFollowerCount(authToken, displayedUser);
+      const count = await this.service.getFollowerCount(
+        authToken,
+        displayedUser
+      );
       this.view.setFollowerCount(count);
-    },
-    "get follower count");
+    }, "get follower count");
   }
 
   public async followUser(authToken: AuthToken): Promise<void> {
@@ -99,20 +110,25 @@ export class UserInfoPresenter extends Presenter<UserInfoView> {
 
     let toastId = "";
 
-    await this.doFailureRecordingOperation(async () => {
-      this.view.setIsLoading(true);
-      toastId = this.view.displayInfoMessage(`${operationName} ${displayedUser.name}...`, 0);
+    await this.doFailureRecordingOperation(
+      async () => {
+        this.view.setIsLoading(true);
+        toastId = this.view.displayInfoMessage(
+          `${operationName} ${displayedUser.name}...`,
+          0
+        );
 
-      const [followerCount, followeeCount] = await operation();
-      this.view.setIsFollower(following);
-      this.view.setFollowerCount(followerCount);
-      this.view.setFolloweeCount(followeeCount);
-    },
-    operationName,
-    () => {
-      this.view.deleteMessage(toastId);
-      this.view.setIsLoading(false);
-    });
+        const [followerCount, followeeCount] = await operation();
+        this.view.setIsFollower(following);
+        this.view.setFollowerCount(followerCount);
+        this.view.setFolloweeCount(followeeCount);
+      },
+      operationName,
+      () => {
+        this.view.deleteMessage(toastId);
+        this.view.setIsLoading(false);
+      }
+    );
   }
 
   public switchToLoggedInUser(): void {
