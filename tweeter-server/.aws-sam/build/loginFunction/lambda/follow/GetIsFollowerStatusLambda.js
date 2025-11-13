@@ -4,11 +4,11 @@ exports.handler = void 0;
 const FollowService_1 = require("../../model/service/FollowService");
 const handler = async (request) => {
     const followService = new FollowService_1.FollowService();
-    const count = await followService.getFolloweeCount(request.token, request.selectedUser);
+    const isFollower = await followService.getIsFollowerStatus(request.token, request.user, request.selectedUser);
     return {
         success: true,
         message: null,
-        number: count,
+        isFollower: isFollower,
     };
 };
 exports.handler = handler;

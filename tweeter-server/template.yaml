@@ -48,7 +48,7 @@ Resources:
       Name: tweeterApi
       StageName: prod
       Cors:
-        AllowMethods: "'GET,POST,PUT,DELETE'"
+        AllowMethods: "'GET,POST,PUT,DELETE,OPTIONS'"
         AllowHeaders: "'*'"
         AllowOrigin: "'*'"
       DefinitionBody:
@@ -200,7 +200,7 @@ Resources:
                 responses: *commonAmazonResponses
               responses: *commonSwaggerResponses
 
-          /getfollowerstatus:
+          /getisfollowerstatus:
             post:
               description: "Check if a user is following another user"
               consumes: *commonConsumes
@@ -440,14 +440,14 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       FunctionName: isFollowingFunction
-      Handler: lambda/follow/GetFollowerStatusLambda.handler
+      Handler: lambda/follow/GetIsFollowerStatusLambda.handler
       Policies: *commonPolicies
       Events:
         Api:
           Type: Api
           Properties:
             RestApiId: !Ref tweeterApi
-            Path: /getfollowerstatus
+            Path: /getisfollowerstatus
             Method: POST
 
   getFollowersCountFunction:
