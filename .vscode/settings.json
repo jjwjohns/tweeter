@@ -4,6 +4,25 @@
   // Make sure it doesn't try to watch independently
   "jest.runMode": "on-demand",
   // Optional quality of life
-  "jest.rootPath": "tweeter-web", 
-  "jest.debugMode": true
+  "jest.rootPath": "tweeter-web",
+  "jest.debugMode": true,
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.formatOnSave": true,
+
+  // make VS Code always format with Prettier
+  "[javascript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[typescript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[typescriptreact]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[javascriptreact]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[json]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  }
 }
