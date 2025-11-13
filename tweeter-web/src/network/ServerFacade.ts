@@ -8,6 +8,8 @@ import {
   IsFollowerResponse,
   User,
   UserDto,
+  TokenAliasRequest,
+  UserResponse,
 } from "tweeter-shared";
 import { ClientCommunicator } from "./ClientCommunicator";
 
@@ -17,6 +19,7 @@ export class ServerFacade {
 
   private clientCommunicator = new ClientCommunicator(this.SERVER_URL);
 
+  // Follow-related methods
   public async getMoreFollowees(
     request: PagedUserItemRequest
   ): Promise<[User[], boolean]> {
@@ -145,6 +148,21 @@ export class ServerFacade {
 
     if (response.success) {
       return response;
+    } else {
+      console.error(response);
+      throw new Error(response.message ?? undefined);
+    }
+  }
+
+  // User-related methods
+  public async getUser(request: TokenAliasRequest): Promise<User | null> {
+    const response = await this.clientCommunicator.doPost<
+      TokenAliasRequest,
+      UserResponse
+    >(request, "/getuser");
+
+    if (response.success) {
+      return User.getUserFromDto(response.user!);
     } else {
       console.error(response);
       throw new Error(response.message ?? undefined);

@@ -1,12 +1,21 @@
-import { AuthToken, User, FakeData } from "tweeter-shared";
+import { AuthToken, User, FakeData, TokenAliasRequest } from "tweeter-shared";
 import { Service } from "./Service";
+import { ServerFacade } from "../../network/ServerFacade";
 
 export class UserService implements Service {
-      public async getUser(
-        authToken: AuthToken,
-        alias: string
-      ): Promise<User | null> {
-        // TODO: Replace with the result of calling server
-        return FakeData.instance.findUserByAlias(alias);
-      };
+  private server = new ServerFacade();
+
+  public async getUser(
+    authToken: AuthToken,
+    alias: string
+  ): Promise<User | null> {
+    const request: TokenAliasRequest = {
+      token: authToken ? authToken.token : "",
+      userAlias: alias,
+    };
+
+    const response = await this.server.getUser(request);
+
+    return response;
+  }
 }
