@@ -35,8 +35,15 @@ export class FollowService implements Service {
     pageSize: number,
     lastUser: User | null
   ): Promise<[User[], boolean]> {
-    // TODO: Replace with the result of calling server
-    return FakeData.instance.getPageOfUsers(lastUser, pageSize, userAlias);
+    const request: PagedUserItemRequest = {
+      token: authToken ? authToken.token : "",
+      userAlias: userAlias,
+      pageSize: pageSize,
+      lastItem: lastUser ? lastUser.dto : null,
+    };
+
+    const [items, hasMore] = await this.server.getMoreFollowers(request);
+    return [items, hasMore];
   }
 
   public async getIsFollowerStatus(
