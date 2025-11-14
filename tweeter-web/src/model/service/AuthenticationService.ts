@@ -1,50 +1,48 @@
-import { Buffer } from "buffer";
 import { AuthToken } from "tweeter-shared/dist/model/domain/AuthToken";
 import { User } from "tweeter-shared/dist/model/domain/User";
-import { FakeData } from "tweeter-shared/dist/util/FakeData";
 import { Service } from "./Service";
+import { ServerFacade } from "../../network/ServerFacade";
 
-export class AuthenticationService implements Service{
-  
-   public async logout(authToken: AuthToken): Promise<void>{
-    // Pause so we can see the logging out message. Delete when the call to the server is implemented.
-    await new Promise((res) => setTimeout(res, 1000));
-  };
+export class AuthenticationService implements Service {
+  private server = new ServerFacade();
 
+  public async logout(authToken: AuthToken): Promise<void> {
+    const request = {
+      token: authToken ? authToken.token : "",
+    };
 
-   public async login(
-      alias: string,
-      password: string
-    ): Promise<[User, AuthToken]>{
-      // TODO: Replace with the result of calling the server
-      const user = FakeData.instance.firstUser;
-  
-      if (user === null) {
-        throw new Error("Invalid alias or password");
-      }
-  
-      return [user, FakeData.instance.authToken];
-    }
+    await this.server.logout(request);
+  }
+
+  public async login(
+    alias: string,
+    password: string
+  ): Promise<[User, AuthToken]> {
+    const request = {
+      alias: alias,
+      password: password,
+    };
+
+    return this.server.login(request);
+  }
 
   public async register(
-      firstName: string,
-      lastName: string,
-      alias: string,
-      password: string,
-      userImageBytes: Uint8Array,
-      imageFileExtension: string
-    ): Promise<[User, AuthToken]>{
-      // Not neded now, but will be needed when you make the request to the server in milestone 3
-      const imageStringBase64: string =
-        Buffer.from(userImageBytes).toString("base64");
-  
-      // TODO: Replace with the result of calling the server
-      const user = FakeData.instance.firstUser;
-  
-      if (user === null) {
-        throw new Error("Invalid registration");
-      }
-  
-      return [user, FakeData.instance.authToken];
+    firstName: string,
+    lastName: string,
+    alias: string,
+    password: string,
+    userImageBytes: Uint8Array,
+    imageFileExtension: string
+  ): Promise<[User, AuthToken]> {
+    const request = {
+      firstName: firstName,
+      lastName: lastName,
+      alias: alias,
+      password: password,
+      userImageBytes: userImageBytes,
+      imageFileExtension: imageFileExtension,
     };
+
+    return this.server.register(request);
+  }
 }

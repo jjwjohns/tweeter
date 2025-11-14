@@ -19,13 +19,13 @@ class FollowService {
         return tweeter_shared_1.FakeData.instance.getFollowerCount(user.alias);
     }
     async follow(token, userToFollow) {
-        await new Promise((f) => setTimeout(f, 2000));
+        await new Promise((f) => setTimeout(f, 500));
         const followerCount = await this.getFollowerCount(token, userToFollow);
         const followeeCount = await this.getFolloweeCount(token, userToFollow);
         return [followerCount, followeeCount];
     }
     async unfollow(token, userToUnfollow) {
-        await new Promise((f) => setTimeout(f, 2000));
+        await new Promise((f) => setTimeout(f, 500));
         const followerCount = await this.getFollowerCount(token, userToUnfollow);
         const followeeCount = await this.getFolloweeCount(token, userToUnfollow);
         return [followerCount, followeeCount];

@@ -20,6 +20,9 @@ export type { PagedUserItemRequest } from "./model/net/request/PagedUserItemRequ
 export type { PagedStatusItemRequest } from "./model/net/request/PagedStatusItemRequest";
 export type { TokenAliasRequest } from "./model/net/request/TokenAliasRequest";
 export type { StatusRequest } from "./model/net/request/StatusRequest";
+export type { LoginRequest } from "./model/net/request/LoginRequest";
+export type { RegisterRequest } from "./model/net/request/RegisterRequest";
+export type { TokenRequest } from "./model/net/request/TokenRequest";
 
 // Response exports
 export type { PagedUserItemResponse } from "./model/net/response/PagedUserItemResponse";
@@ -30,7 +33,6 @@ export type { NumberResponse } from "./model/net/response/NumberResponse";
 export type { IsFollowerResponse } from "./model/net/response/IsFollowerResponse";
 export type { UserResponse } from "./model/net/response/UserResponse";
 export type { UserAuthResponse } from "./model/net/response/UserAuthResponse";
-export type { StatusResponse } from "./model/net/response/StatusResponse";
 
 // Utility exports
 export { FakeData } from "./util/FakeData";

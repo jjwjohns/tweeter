@@ -1,4 +1,4 @@
-import { AuthToken, FakeData, User, UserDto } from "tweeter-shared";
+import { FakeData, User, UserDto } from "tweeter-shared";
 import { Service } from "./Service";
 
 export class FollowService implements Service {
@@ -40,7 +40,7 @@ export class FollowService implements Service {
     token: string,
     userToFollow: UserDto
   ): Promise<[followerCount: number, followeeCount: number]> {
-    await new Promise((f) => setTimeout(f, 2000));
+    await new Promise((f) => setTimeout(f, 500));
 
     const followerCount = await this.getFollowerCount(token, userToFollow);
     const followeeCount = await this.getFolloweeCount(token, userToFollow);
@@ -52,7 +52,7 @@ export class FollowService implements Service {
     token: string,
     userToUnfollow: UserDto
   ): Promise<[followerCount: number, followeeCount: number]> {
-    await new Promise((f) => setTimeout(f, 2000));
+    await new Promise((f) => setTimeout(f, 500));
 
     const followerCount = await this.getFollowerCount(token, userToUnfollow);
     const followeeCount = await this.getFolloweeCount(token, userToUnfollow);

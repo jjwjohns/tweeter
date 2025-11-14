@@ -1,7 +1,5 @@
-import { AuthToken } from "tweeter-shared/dist/model/domain/AuthToken";
-import { FakeData } from "tweeter-shared/dist/util/FakeData";
+import { AuthToken, FakeData, UserDto } from "tweeter-shared";
 import { Service } from "./Service";
-import { UserDto } from "tweeter-shared/dist/model/dto/UserDto";
 
 export class AuthenticationService implements Service {
   public async logout(token: string): Promise<void> {

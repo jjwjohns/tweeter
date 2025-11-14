@@ -7,7 +7,6 @@ import {
   TokenUserSelectedUserRequest,
   IsFollowerResponse,
   User,
-  UserDto,
   TokenAliasRequest,
   UserResponse,
   Status,
@@ -15,8 +14,11 @@ import {
   PagedStatusItemResponse,
   AuthToken,
   StatusRequest,
-  TweeterRequest,
   TweeterResponse,
+  LoginRequest,
+  UserAuthResponse,
+  RegisterRequest,
+  TokenRequest,
 } from "tweeter-shared";
 import { ClientCommunicator } from "./ClientCommunicator";
 
@@ -183,7 +185,7 @@ export class ServerFacade {
     const response = await this.clientCommunicator.doPost<
       PagedStatusItemRequest,
       PagedStatusItemResponse
-    >(request, "/getfeedstatuses");
+    >(request, "/getfeed");
 
     // Convert the StatusDto array returned by ClientCommunicator to a Status array
     const items: Status[] | null =
@@ -210,7 +212,7 @@ export class ServerFacade {
     const response = await this.clientCommunicator.doPost<
       PagedStatusItemRequest,
       PagedStatusItemResponse
-    >(request, "/getstorystatuses");
+    >(request, "/getstory");
 
     // Convert the StatusDto array returned by ClientCommunicator to a Status array
     const items: Status[] | null =
@@ -237,11 +239,60 @@ export class ServerFacade {
       TweeterResponse
     >(request, "/poststatus");
 
-    if (response === undefined) {
+    if (response.success) {
       return;
     } else {
       console.error(response);
       throw new Error("Failed to post status");
+    }
+  }
+
+  //Authentication-related methods
+  public async logout(request: TokenRequest): Promise<void> {
+    const response = await this.clientCommunicator.doPost<
+      TokenRequest,
+      TweeterResponse
+    >(request, "/logout");
+
+    if (response.success) {
+      return;
+    } else {
+      console.error(response);
+      throw new Error(response.message ?? undefined);
+    }
+  }
+
+  public async login(request: LoginRequest): Promise<[User, AuthToken]> {
+    const response = await this.clientCommunicator.doPost<
+      LoginRequest,
+      UserAuthResponse
+    >(request, "/login");
+
+    if (response.success) {
+      return [
+        User.getUserFromDto(response.user) as User,
+        new AuthToken(response.token, Date.now()),
+      ];
+    } else {
+      console.error(response);
+      throw new Error("Failed to Login");
+    }
+  }
+
+  public async register(request: RegisterRequest): Promise<[User, AuthToken]> {
+    const response = await this.clientCommunicator.doPost<
+      RegisterRequest,
+      UserAuthResponse
+    >(request, "/register");
+
+    if (response.success) {
+      return [
+        User.getUserFromDto(response.user) as User,
+        new AuthToken(response.token, Date.now()),
+      ];
+    } else {
+      console.error(response);
+      throw new Error("Failed to Register");
     }
   }
 }

@@ -39,13 +39,10 @@ export class StatusService implements Service {
     return [items, hasMore];
   }
 
-  public async postStatus(
-    authToken: AuthToken,
-    newStatus: Status
-  ): Promise<void> {
+  public async postStatus(authToken: AuthToken, status: Status): Promise<void> {
     const request = {
       token: authToken ? authToken.token : "",
-      status: newStatus.dto,
+      status: status.dto,
     };
 
     await this.server.postStatus(request);

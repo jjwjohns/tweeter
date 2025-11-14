@@ -68,7 +68,7 @@ export abstract class PageItemPresenter<T, U extends Service> extends Presenter<
       this.lastItem =
         newItems.length > 0 ? newItems[newItems.length - 1] : null;
       this.view.addItems(newItems);
-    }, "load followees");
+    }, "load items for " + this.itemDescription());
   }
 
   protected abstract itemDescription(): string;
