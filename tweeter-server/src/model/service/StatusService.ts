@@ -1,4 +1,4 @@
-import { Status, StatusDto } from "tweeter-shared";
+import { Status, StatusDto, TweeterResponse } from "tweeter-shared";
 import { FakeData } from "tweeter-shared/dist/util/FakeData";
 import { Service } from "./Service";
 
@@ -21,8 +21,12 @@ export class StatusService implements Service {
     return this.getFakeData(lastItem, pageSize);
   }
 
-  public async postStatus(token: string, newStatus: StatusDto): Promise<void> {
+  public async postStatus(
+    token: string,
+    newStatus: StatusDto
+  ): Promise<TweeterResponse> {
     await new Promise((f) => setTimeout(f, 2000));
+    return { success: true, message: "Status posted successfully." };
   }
 
   private async getFakeData(
