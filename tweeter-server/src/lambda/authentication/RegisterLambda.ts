@@ -6,6 +6,14 @@ export const handler = async (
 ): Promise<UserAuthResponse> => {
   const authenticationService = new AuthenticationService();
 
+  if (!request.firstName || request.firstName.trim() === "") {
+    throw new Error("bad-request: First name cannot be empty");
+  }
+
+  if (!request.lastName || request.lastName.trim() === "") {
+    throw new Error("bad-request: Last name cannot be empty");
+  }
+
   const [userDto, token] = await authenticationService.register(
     request.firstName,
     request.lastName,
