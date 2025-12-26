@@ -16,5 +16,6 @@ export interface StoryDAO {
       timestamp: number;
     }>;
     lastKey?: any;
+    hasMore: boolean;
   }>;
 }

@@ -8,7 +8,7 @@ import {
 import { getDynamoClient } from "./DynamoClient";
 import { UserDAO } from "../UserDAO";
 
-const USER_TABLE = process.env.USER_TABLE || "User"; // configurable per stage
+const USER_TABLE = "User";
 
 type UserRecord = {
   alias: string;
