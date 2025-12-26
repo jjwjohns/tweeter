@@ -1,6 +1,12 @@
 import { PagedUserItemRequest } from "tweeter-shared";
 import { PagedUserItemResponse } from "tweeter-shared";
 import { FollowService } from "../../model/service/FollowService";
+import { DAOFactory } from "../../factory/DAOFactory";
+import { DynamoDAOFactory } from "../../factory/DynamoDAOFactory";
+
+if (!DAOFactory.instance) {
+  DAOFactory.init(new DynamoDAOFactory());
+}
 
 export const handler = async (
   request: PagedUserItemRequest

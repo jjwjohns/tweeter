@@ -1,6 +1,12 @@
 import { TokenAliasRequest } from "tweeter-shared";
 import { UserResponse } from "tweeter-shared";
 import { UserService } from "../../model/service/UserService";
+import { DAOFactory } from "../../factory/DAOFactory";
+import { DynamoDAOFactory } from "../../factory/DynamoDAOFactory";
+
+if (!DAOFactory.instance) {
+  DAOFactory.init(new DynamoDAOFactory());
+}
 
 export const handler = async (
   request: TokenAliasRequest

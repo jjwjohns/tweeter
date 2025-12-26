@@ -1,5 +1,11 @@
 import { RegisterRequest, UserAuthResponse } from "tweeter-shared";
 import { AuthenticationService } from "../../model/service/AuthenticationService";
+import { DAOFactory } from "../../factory/DAOFactory";
+import { DynamoDAOFactory } from "../../factory/DynamoDAOFactory";
+
+if (!DAOFactory.instance) {
+  DAOFactory.init(new DynamoDAOFactory());
+}
 
 export const handler = async (
   request: RegisterRequest

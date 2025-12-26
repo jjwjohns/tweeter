@@ -1,5 +1,12 @@
 import { LoginRequest, UserAuthResponse } from "tweeter-shared";
 import { AuthenticationService } from "../../model/service/AuthenticationService";
+import { DAOFactory } from "../../factory/DAOFactory";
+import { DynamoDAOFactory } from "../../factory/DynamoDAOFactory";
+
+// Initialize concrete DAOs once per cold start via the abstract factory.
+if (!DAOFactory.instance) {
+  DAOFactory.init(new DynamoDAOFactory());
+}
 
 export const handler = async (
   request: LoginRequest
