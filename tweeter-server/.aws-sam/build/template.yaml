@@ -53,19 +53,22 @@ Resources:
             responseParameters:
               method.response.header.Access-Control-Allow-Origin: '''*'''
             responseTemplates:
-              application/json: '{ "error": "$input.path(''$.errorMessage'')" }'
+              application/json: '{ "errorMessage": "$input.path(''$.errorMessage'')"
+                }'
           .*unauthorized.*:
             statusCode: 401
             responseParameters:
               method.response.header.Access-Control-Allow-Origin: '''*'''
             responseTemplates:
-              application/json: '{ "error": "$input.path(''$.errorMessage'')" }'
+              application/json: '{ "errorMessage": "$input.path(''$.errorMessage'')"
+                }'
           .*internal-server-error.*:
             statusCode: 500
             responseParameters:
               method.response.header.Access-Control-Allow-Origin: '''*'''
             responseTemplates:
-              application/json: '{ "error": "$input.path(''$.errorMessage'')" }'
+              application/json: '{ "errorMessage": "$input.path(''$.errorMessage'')"
+                }'
         x-common-swagger-responses:
           '200':
             description: OK
@@ -112,21 +115,21 @@ Resources:
                     responseParameters:
                       method.response.header.Access-Control-Allow-Origin: '''*'''
                     responseTemplates:
-                      application/json: '{ "error": "$input.path(''$.errorMessage'')"
+                      application/json: '{ "errorMessage": "$input.path(''$.errorMessage'')"
                         }'
                   .*unauthorized.*:
                     statusCode: 401
                     responseParameters:
                       method.response.header.Access-Control-Allow-Origin: '''*'''
                     responseTemplates:
-                      application/json: '{ "error": "$input.path(''$.errorMessage'')"
+                      application/json: '{ "errorMessage": "$input.path(''$.errorMessage'')"
                         }'
                   .*internal-server-error.*:
                     statusCode: 500
                     responseParameters:
                       method.response.header.Access-Control-Allow-Origin: '''*'''
                     responseTemplates:
-                      application/json: '{ "error": "$input.path(''$.errorMessage'')"
+                      application/json: '{ "errorMessage": "$input.path(''$.errorMessage'')"
                         }'
               responses:
                 '200':
@@ -173,21 +176,21 @@ Resources:
                     responseParameters:
                       method.response.header.Access-Control-Allow-Origin: '''*'''
                     responseTemplates:
-                      application/json: '{ "error": "$input.path(''$.errorMessage'')"
+                      application/json: '{ "errorMessage": "$input.path(''$.errorMessage'')"
                         }'
                   .*unauthorized.*:
                     statusCode: 401
                     responseParameters:
                       method.response.header.Access-Control-Allow-Origin: '''*'''
                     responseTemplates:
-                      application/json: '{ "error": "$input.path(''$.errorMessage'')"
+                      application/json: '{ "errorMessage": "$input.path(''$.errorMessage'')"
                         }'
                   .*internal-server-error.*:
                     statusCode: 500
                     responseParameters:
                       method.response.header.Access-Control-Allow-Origin: '''*'''
                     responseTemplates:
-                      application/json: '{ "error": "$input.path(''$.errorMessage'')"
+                      application/json: '{ "errorMessage": "$input.path(''$.errorMessage'')"
                         }'
               responses:
                 '200':
@@ -234,21 +237,21 @@ Resources:
                     responseParameters:
                       method.response.header.Access-Control-Allow-Origin: '''*'''
                     responseTemplates:
-                      application/json: '{ "error": "$input.path(''$.errorMessage'')"
+                      application/json: '{ "errorMessage": "$input.path(''$.errorMessage'')"
                         }'
                   .*unauthorized.*:
                     statusCode: 401
                     responseParameters:
                       method.response.header.Access-Control-Allow-Origin: '''*'''
                     responseTemplates:
-                      application/json: '{ "error": "$input.path(''$.errorMessage'')"
+                      application/json: '{ "errorMessage": "$input.path(''$.errorMessage'')"
                         }'
                   .*internal-server-error.*:
                     statusCode: 500
                     responseParameters:
                       method.response.header.Access-Control-Allow-Origin: '''*'''
                     responseTemplates:
-                      application/json: '{ "error": "$input.path(''$.errorMessage'')"
+                      application/json: '{ "errorMessage": "$input.path(''$.errorMessage'')"
                         }'
               responses:
                 '200':
@@ -295,21 +298,21 @@ Resources:
                     responseParameters:
                       method.response.header.Access-Control-Allow-Origin: '''*'''
                     responseTemplates:
-                      application/json: '{ "error": "$input.path(''$.errorMessage'')"
+                      application/json: '{ "errorMessage": "$input.path(''$.errorMessage'')"
                         }'
                   .*unauthorized.*:
                     statusCode: 401
                     responseParameters:
                       method.response.header.Access-Control-Allow-Origin: '''*'''
                     responseTemplates:
-                      application/json: '{ "error": "$input.path(''$.errorMessage'')"
+                      application/json: '{ "errorMessage": "$input.path(''$.errorMessage'')"
                         }'
                   .*internal-server-error.*:
                     statusCode: 500
                     responseParameters:
                       method.response.header.Access-Control-Allow-Origin: '''*'''
                     responseTemplates:
-                      application/json: '{ "error": "$input.path(''$.errorMessage'')"
+                      application/json: '{ "errorMessage": "$input.path(''$.errorMessage'')"
                         }'
               responses:
                 '200':
@@ -356,21 +359,21 @@ Resources:
                     responseParameters:
                       method.response.header.Access-Control-Allow-Origin: '''*'''
                     responseTemplates:
-                      application/json: '{ "error": "$input.path(''$.errorMessage'')"
+                      application/json: '{ "errorMessage": "$input.path(''$.errorMessage'')"
                         }'
                   .*unauthorized.*:
                     statusCode: 401
                     responseParameters:
                       method.response.header.Access-Control-Allow-Origin: '''*'''
                     responseTemplates:
-                      application/json: '{ "error": "$input.path(''$.errorMessage'')"
+                      application/json: '{ "errorMessage": "$input.path(''$.errorMessage'')"
                         }'
                   .*internal-server-error.*:
                     statusCode: 500
                     responseParameters:
                       method.response.header.Access-Control-Allow-Origin: '''*'''
                     responseTemplates:
-                      application/json: '{ "error": "$input.path(''$.errorMessage'')"
+                      application/json: '{ "errorMessage": "$input.path(''$.errorMessage'')"
                         }'
               responses:
                 '200':
@@ -417,21 +420,21 @@ Resources:
                     responseParameters:
                       method.response.header.Access-Control-Allow-Origin: '''*'''
                     responseTemplates:
-                      application/json: '{ "error": "$input.path(''$.errorMessage'')"
+                      application/json: '{ "errorMessage": "$input.path(''$.errorMessage'')"
                         }'
                   .*unauthorized.*:
                     statusCode: 401
                     responseParameters:
                       method.response.header.Access-Control-Allow-Origin: '''*'''
                     responseTemplates:
-                      application/json: '{ "error": "$input.path(''$.errorMessage'')"
+                      application/json: '{ "errorMessage": "$input.path(''$.errorMessage'')"
                         }'
                   .*internal-server-error.*:
                     statusCode: 500
                     responseParameters:
                       method.response.header.Access-Control-Allow-Origin: '''*'''
                     responseTemplates:
-                      application/json: '{ "error": "$input.path(''$.errorMessage'')"
+                      application/json: '{ "errorMessage": "$input.path(''$.errorMessage'')"
                         }'
               responses:
                 '200':
@@ -478,21 +481,21 @@ Resources:
                     responseParameters:
                       method.response.header.Access-Control-Allow-Origin: '''*'''
                     responseTemplates:
-                      application/json: '{ "error": "$input.path(''$.errorMessage'')"
+                      application/json: '{ "errorMessage": "$input.path(''$.errorMessage'')"
                         }'
                   .*unauthorized.*:
                     statusCode: 401
                     responseParameters:
                       method.response.header.Access-Control-Allow-Origin: '''*'''
                     responseTemplates:
-                      application/json: '{ "error": "$input.path(''$.errorMessage'')"
+                      application/json: '{ "errorMessage": "$input.path(''$.errorMessage'')"
                         }'
                   .*internal-server-error.*:
                     statusCode: 500
                     responseParameters:
                       method.response.header.Access-Control-Allow-Origin: '''*'''
                     responseTemplates:
-                      application/json: '{ "error": "$input.path(''$.errorMessage'')"
+                      application/json: '{ "errorMessage": "$input.path(''$.errorMessage'')"
                         }'
               responses:
                 '200':
@@ -539,21 +542,21 @@ Resources:
                     responseParameters:
                       method.response.header.Access-Control-Allow-Origin: '''*'''
                     responseTemplates:
-                      application/json: '{ "error": "$input.path(''$.errorMessage'')"
+                      application/json: '{ "errorMessage": "$input.path(''$.errorMessage'')"
                         }'
                   .*unauthorized.*:
                     statusCode: 401
                     responseParameters:
                       method.response.header.Access-Control-Allow-Origin: '''*'''
                     responseTemplates:
-                      application/json: '{ "error": "$input.path(''$.errorMessage'')"
+                      application/json: '{ "errorMessage": "$input.path(''$.errorMessage'')"
                         }'
                   .*internal-server-error.*:
                     statusCode: 500
                     responseParameters:
                       method.response.header.Access-Control-Allow-Origin: '''*'''
                     responseTemplates:
-                      application/json: '{ "error": "$input.path(''$.errorMessage'')"
+                      application/json: '{ "errorMessage": "$input.path(''$.errorMessage'')"
                         }'
               responses:
                 '200':
@@ -600,21 +603,21 @@ Resources:
                     responseParameters:
                       method.response.header.Access-Control-Allow-Origin: '''*'''
                     responseTemplates:
-                      application/json: '{ "error": "$input.path(''$.errorMessage'')"
+                      application/json: '{ "errorMessage": "$input.path(''$.errorMessage'')"
                         }'
                   .*unauthorized.*:
                     statusCode: 401
                     responseParameters:
                       method.response.header.Access-Control-Allow-Origin: '''*'''
                     responseTemplates:
-                      application/json: '{ "error": "$input.path(''$.errorMessage'')"
+                      application/json: '{ "errorMessage": "$input.path(''$.errorMessage'')"
                         }'
                   .*internal-server-error.*:
                     statusCode: 500
                     responseParameters:
                       method.response.header.Access-Control-Allow-Origin: '''*'''
                     responseTemplates:
-                      application/json: '{ "error": "$input.path(''$.errorMessage'')"
+                      application/json: '{ "errorMessage": "$input.path(''$.errorMessage'')"
                         }'
               responses:
                 '200':
@@ -661,21 +664,21 @@ Resources:
                     responseParameters:
                       method.response.header.Access-Control-Allow-Origin: '''*'''
                     responseTemplates:
-                      application/json: '{ "error": "$input.path(''$.errorMessage'')"
+                      application/json: '{ "errorMessage": "$input.path(''$.errorMessage'')"
                         }'
                   .*unauthorized.*:
                     statusCode: 401
                     responseParameters:
                       method.response.header.Access-Control-Allow-Origin: '''*'''
                     responseTemplates:
-                      application/json: '{ "error": "$input.path(''$.errorMessage'')"
+                      application/json: '{ "errorMessage": "$input.path(''$.errorMessage'')"
                         }'
                   .*internal-server-error.*:
                     statusCode: 500
                     responseParameters:
                       method.response.header.Access-Control-Allow-Origin: '''*'''
                     responseTemplates:
-                      application/json: '{ "error": "$input.path(''$.errorMessage'')"
+                      application/json: '{ "errorMessage": "$input.path(''$.errorMessage'')"
                         }'
               responses:
                 '200':
@@ -722,21 +725,21 @@ Resources:
                     responseParameters:
                       method.response.header.Access-Control-Allow-Origin: '''*'''
                     responseTemplates:
-                      application/json: '{ "error": "$input.path(''$.errorMessage'')"
+                      application/json: '{ "errorMessage": "$input.path(''$.errorMessage'')"
                         }'
                   .*unauthorized.*:
                     statusCode: 401
                     responseParameters:
                       method.response.header.Access-Control-Allow-Origin: '''*'''
                     responseTemplates:
-                      application/json: '{ "error": "$input.path(''$.errorMessage'')"
+                      application/json: '{ "errorMessage": "$input.path(''$.errorMessage'')"
                         }'
                   .*internal-server-error.*:
                     statusCode: 500
                     responseParameters:
                       method.response.header.Access-Control-Allow-Origin: '''*'''
                     responseTemplates:
-                      application/json: '{ "error": "$input.path(''$.errorMessage'')"
+                      application/json: '{ "errorMessage": "$input.path(''$.errorMessage'')"
                         }'
               responses:
                 '200':
@@ -783,21 +786,21 @@ Resources:
                     responseParameters:
                       method.response.header.Access-Control-Allow-Origin: '''*'''
                     responseTemplates:
-                      application/json: '{ "error": "$input.path(''$.errorMessage'')"
+                      application/json: '{ "errorMessage": "$input.path(''$.errorMessage'')"
                         }'
                   .*unauthorized.*:
                     statusCode: 401
                     responseParameters:
                       method.response.header.Access-Control-Allow-Origin: '''*'''
                     responseTemplates:
-                      application/json: '{ "error": "$input.path(''$.errorMessage'')"
+                      application/json: '{ "errorMessage": "$input.path(''$.errorMessage'')"
                         }'
                   .*internal-server-error.*:
                     statusCode: 500
                     responseParameters:
                       method.response.header.Access-Control-Allow-Origin: '''*'''
                     responseTemplates:
-                      application/json: '{ "error": "$input.path(''$.errorMessage'')"
+                      application/json: '{ "errorMessage": "$input.path(''$.errorMessage'')"
                         }'
               responses:
                 '200':
@@ -844,21 +847,21 @@ Resources:
                     responseParameters:
                       method.response.header.Access-Control-Allow-Origin: '''*'''
                     responseTemplates:
-                      application/json: '{ "error": "$input.path(''$.errorMessage'')"
+                      application/json: '{ "errorMessage": "$input.path(''$.errorMessage'')"
                         }'
                   .*unauthorized.*:
                     statusCode: 401
                     responseParameters:
                       method.response.header.Access-Control-Allow-Origin: '''*'''
                     responseTemplates:
-                      application/json: '{ "error": "$input.path(''$.errorMessage'')"
+                      application/json: '{ "errorMessage": "$input.path(''$.errorMessage'')"
                         }'
                   .*internal-server-error.*:
                     statusCode: 500
                     responseParameters:
                       method.response.header.Access-Control-Allow-Origin: '''*'''
                     responseTemplates:
-                      application/json: '{ "error": "$input.path(''$.errorMessage'')"
+                      application/json: '{ "errorMessage": "$input.path(''$.errorMessage'')"
                         }'
               responses:
                 '200':
@@ -905,21 +908,21 @@ Resources:
                     responseParameters:
                       method.response.header.Access-Control-Allow-Origin: '''*'''
                     responseTemplates:
-                      application/json: '{ "error": "$input.path(''$.errorMessage'')"
+                      application/json: '{ "errorMessage": "$input.path(''$.errorMessage'')"
                         }'
                   .*unauthorized.*:
                     statusCode: 401
                     responseParameters:
                       method.response.header.Access-Control-Allow-Origin: '''*'''
                     responseTemplates:
-                      application/json: '{ "error": "$input.path(''$.errorMessage'')"
+                      application/json: '{ "errorMessage": "$input.path(''$.errorMessage'')"
                         }'
                   .*internal-server-error.*:
                     statusCode: 500
                     responseParameters:
                       method.response.header.Access-Control-Allow-Origin: '''*'''
                     responseTemplates:
-                      application/json: '{ "error": "$input.path(''$.errorMessage'')"
+                      application/json: '{ "errorMessage": "$input.path(''$.errorMessage'')"
                         }'
               responses:
                 '200':

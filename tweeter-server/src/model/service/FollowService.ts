@@ -12,6 +12,7 @@ export class FollowService extends Service {
     lastItem: UserDto | null
   ): Promise<[UserDto[], boolean]> {
     await this.authorizationService.authorize(token);
+
     return this.getFakeData(lastItem, pageSize, userAlias);
   }
 
@@ -22,6 +23,7 @@ export class FollowService extends Service {
     lastItem: UserDto | null
   ): Promise<[UserDto[], boolean]> {
     await this.authorizationService.authorize(token);
+
     return this.getFakeData(lastItem, pageSize, userAlias);
   }
 
@@ -31,14 +33,19 @@ export class FollowService extends Service {
     selectedUser: UserDto
   ): Promise<boolean> {
     await this.authorizationService.authorize(token);
+
     return FakeData.instance.isFollower();
   }
 
   public async getFolloweeCount(token: string, user: UserDto): Promise<number> {
+    await this.authorizationService.authorize(token);
+
     return FakeData.instance.getFolloweeCount(user.alias);
   }
 
   public async getFollowerCount(token: string, user: UserDto): Promise<number> {
+    await this.authorizationService.authorize(token);
+
     return FakeData.instance.getFollowerCount(user.alias);
   }
 
@@ -47,6 +54,7 @@ export class FollowService extends Service {
     userToFollow: UserDto
   ): Promise<[followerCount: number, followeeCount: number]> {
     await this.authorizationService.authorize(token);
+
     await new Promise((f) => setTimeout(f, 500));
 
     const followerCount = await this.getFollowerCount(token, userToFollow);
@@ -60,6 +68,7 @@ export class FollowService extends Service {
     userToUnfollow: UserDto
   ): Promise<[followerCount: number, followeeCount: number]> {
     await this.authorizationService.authorize(token);
+
     await new Promise((f) => setTimeout(f, 500));
 
     const followerCount = await this.getFollowerCount(token, userToUnfollow);

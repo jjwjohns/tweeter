@@ -45,7 +45,10 @@ export class DynamoAuthTokenDAO implements AuthTokenDAO {
     const command = new GetCommand({
       TableName: TOKEN_TABLE,
       Key: { token },
-      ProjectionExpression: "token, alias, expiration",
+      ProjectionExpression: "#t, alias, expiration",
+      ExpressionAttributeNames: {
+        "#t": "token",
+      },
     });
 
     const result = await this.docClient.send(command);
@@ -66,7 +69,10 @@ export class DynamoAuthTokenDAO implements AuthTokenDAO {
     const command = new GetCommand({
       TableName: TOKEN_TABLE,
       Key: { token },
-      ProjectionExpression: "token, alias, expiration",
+      ProjectionExpression: "#t, alias, expiration",
+      ExpressionAttributeNames: {
+        "#t": "token",
+      },
     });
 
     const result = await this.docClient.send(command);

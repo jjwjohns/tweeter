@@ -27,7 +27,10 @@ class DynamoAuthTokenDAO {
         const command = new lib_dynamodb_1.GetCommand({
             TableName: TOKEN_TABLE,
             Key: { token },
-            ProjectionExpression: "token, alias, expiration",
+            ProjectionExpression: "#t, alias, expiration",
+            ExpressionAttributeNames: {
+                "#t": "token",
+            },
         });
         const result = await this.docClient.send(command);
         if (!result.Item)
@@ -43,7 +46,10 @@ class DynamoAuthTokenDAO {
         const command = new lib_dynamodb_1.GetCommand({
             TableName: TOKEN_TABLE,
             Key: { token },
-            ProjectionExpression: "token, alias, expiration",
+            ProjectionExpression: "#t, alias, expiration",
+            ExpressionAttributeNames: {
+                "#t": "token",
+            },
         });
         const result = await this.docClient.send(command);
         if (!result.Item)

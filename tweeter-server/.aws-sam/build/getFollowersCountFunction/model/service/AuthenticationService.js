@@ -3,19 +3,21 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.AuthenticationService = void 0;
 const tweeter_shared_1 = require("tweeter-shared");
 const Service_1 = require("./Service");
+const AuthorizationService_1 = require("./AuthorizationService");
 const bcrypt = require("bcryptjs");
 class AuthenticationService extends Service_1.Service {
     async logout(token) {
+        await new AuthorizationService_1.AuthorizationService().authorize(token);
         await this.authTokens.deleteToken(token);
     }
     async login(alias, password) {
         const dbUser = await this.users.getUser(alias);
         if (!dbUser) {
-            throw new Error("Invalid alias or password");
+            throw new Error("bad-request: Invalid alias or password");
         }
         const valid = await bcrypt.compare(password, dbUser.passwordHash);
         if (!valid) {
-            throw new Error("Invalid alias or password");
+            throw new Error("bad-request: Invalid alias or password");
         }
         const user = new tweeter_shared_1.User(dbUser.firstName, dbUser.lastName, dbUser.alias, dbUser.imageUrl);
         const expiration = Date.now() + 1000 * 60 * 60;

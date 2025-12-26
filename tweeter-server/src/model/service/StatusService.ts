@@ -12,6 +12,7 @@ export class StatusService extends Service {
     lastItem: StatusDto | null
   ): Promise<[StatusDto[], boolean]> {
     await this.authorizationService.authorize(token);
+
     return this.getFakeData(lastItem, pageSize);
   }
 
@@ -22,6 +23,7 @@ export class StatusService extends Service {
     lastItem: StatusDto | null
   ): Promise<[StatusDto[], boolean]> {
     await this.authorizationService.authorize(token);
+
     return this.getFakeData(lastItem, pageSize);
   }
 
@@ -30,6 +32,7 @@ export class StatusService extends Service {
     newStatus: StatusDto
   ): Promise<TweeterResponse> {
     await this.authorizationService.authorize(token);
+
     await new Promise((f) => setTimeout(f, 500));
     return { success: true, message: "Status posted successfully." };
   }
