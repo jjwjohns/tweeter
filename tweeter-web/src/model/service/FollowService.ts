@@ -1,12 +1,9 @@
 import {
   AuthToken,
-  FakeData,
   PagedUserItemRequest,
-  PagedUserItemResponse,
   TokenUserRequest,
   TokenUserSelectedUserRequest,
   User,
-  UserDto,
 } from "tweeter-shared";
 import { Service } from "./Service";
 import { ServerFacade } from "../../network/ServerFacade";
