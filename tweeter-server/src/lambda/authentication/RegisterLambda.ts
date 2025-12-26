@@ -20,12 +20,17 @@ export const handler = async (
     throw new Error("bad-request: Last name cannot be empty");
   }
 
+  console.log(
+    "[RegisterLambda] Received base64 length:",
+    request.userImageBase64?.length || 0
+  );
+
   const [userDto, token] = await authenticationService.register(
     request.firstName,
     request.lastName,
     request.alias,
     request.password,
-    request.userImageBytes,
+    request.userImageBase64,
     request.imageFileExtension
   );
 

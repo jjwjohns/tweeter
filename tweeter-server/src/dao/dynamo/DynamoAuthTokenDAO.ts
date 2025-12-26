@@ -5,7 +5,7 @@ import {
   DeleteCommand,
 } from "@aws-sdk/lib-dynamodb";
 
-import { nanoid } from "nanoid";
+import { randomUUID } from "crypto";
 import { getDynamoClient } from "./DynamoClient";
 import { AuthTokenDAO } from "../AuthTokenDAO";
 
@@ -25,7 +25,7 @@ export class DynamoAuthTokenDAO implements AuthTokenDAO {
   }
 
   async createToken(alias: string, expirationEpoch: number): Promise<string> {
-    const token = nanoid(32);
+    const token = randomUUID();
 
     const command = new PutCommand({
       TableName: TOKEN_TABLE,

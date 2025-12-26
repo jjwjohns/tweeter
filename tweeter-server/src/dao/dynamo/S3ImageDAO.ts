@@ -13,7 +13,15 @@ export class S3ImageDAO implements ImageDAO {
     fileName: string,
     base64Image: string
   ): Promise<string> {
+    console.log(
+      "[S3ImageDAO] Received base64 length:",
+      base64Image?.length || 0
+    );
     let decodedImageBuffer: Buffer = Buffer.from(base64Image, "base64");
+    console.log(
+      "[S3ImageDAO] Decoded buffer length:",
+      decodedImageBuffer.length
+    );
     const s3Params = {
       Bucket: BUCKET,
       Key: "image/" + fileName,

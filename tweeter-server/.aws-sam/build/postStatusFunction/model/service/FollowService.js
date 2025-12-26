@@ -2,7 +2,8 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.FollowService = void 0;
 const tweeter_shared_1 = require("tweeter-shared");
-class FollowService {
+const Service_1 = require("./Service");
+class FollowService extends Service_1.Service {
     async loadMoreFollowees(token, userAlias, pageSize, lastItem) {
         return this.getFakeData(lastItem, pageSize, userAlias);
     }

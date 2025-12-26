@@ -1,8 +1,7 @@
-import bcrypt from "bcryptjs";
-
 import { AuthToken, FakeData, UserDto, User } from "tweeter-shared";
 import { Service } from "./Service";
 
+const bcrypt = require("bcryptjs");
 export class AuthenticationService extends Service {
   public async logout(token: string): Promise<void> {
     await this.authTokens.deleteToken(token);
@@ -44,17 +43,20 @@ export class AuthenticationService extends Service {
     lastName: string,
     alias: string,
     password: string,
-    userImageBytes: Uint8Array,
+    userImageBase64: string,
     imageFileExtension: string
   ): Promise<[UserDto, AuthToken]> {
+    console.log(
+      "[AuthService Server] Received base64 length:",
+      userImageBase64?.length || 0
+    );
     const passwordHash = await bcrypt.hash(password, 10);
-
-    const base64Image = Buffer.from(userImageBytes).toString("base64");
 
     const imageUrl = await this.images.uploadProfileImage(
       `${alias}-profile-image.${imageFileExtension}`,
-      base64Image
+      userImageBase64
     );
+    console.log("[AuthService Server] Image uploaded to:", imageUrl);
 
     await this.users.createUser(
       alias,
