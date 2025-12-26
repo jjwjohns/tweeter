@@ -5,8 +5,8 @@ import {
 } from "@aws-sdk/client-s3";
 import { ImageDAO } from "../ImageDAO";
 
-const BUCKET = process.env.IMAGE_BUCKET || "tweeter-profile-images-johns";
-const REGION = process.env.AWS_REGION || "us-east-1";
+const BUCKET = "tweeter-profile-images-johns";
+const REGION = "us-east-1";
 
 export class S3ImageDAO implements ImageDAO {
   async uploadProfileImage(
