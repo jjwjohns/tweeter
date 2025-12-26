@@ -1,13 +1,17 @@
 import { FakeData, User, UserDto } from "tweeter-shared";
 import { Service } from "./Service";
+import { AuthorizationService } from "./AuthorizationService";
 
 export class FollowService extends Service {
+  private authorizationService = new AuthorizationService();
+
   public async loadMoreFollowees(
     token: string,
     userAlias: string,
     pageSize: number,
     lastItem: UserDto | null
   ): Promise<[UserDto[], boolean]> {
+    await this.authorizationService.authorize(token);
     return this.getFakeData(lastItem, pageSize, userAlias);
   }
 
@@ -17,6 +21,7 @@ export class FollowService extends Service {
     pageSize: number,
     lastItem: UserDto | null
   ): Promise<[UserDto[], boolean]> {
+    await this.authorizationService.authorize(token);
     return this.getFakeData(lastItem, pageSize, userAlias);
   }
 
@@ -25,6 +30,7 @@ export class FollowService extends Service {
     user: UserDto,
     selectedUser: UserDto
   ): Promise<boolean> {
+    await this.authorizationService.authorize(token);
     return FakeData.instance.isFollower();
   }
 
@@ -40,6 +46,7 @@ export class FollowService extends Service {
     token: string,
     userToFollow: UserDto
   ): Promise<[followerCount: number, followeeCount: number]> {
+    await this.authorizationService.authorize(token);
     await new Promise((f) => setTimeout(f, 500));
 
     const followerCount = await this.getFollowerCount(token, userToFollow);
@@ -52,6 +59,7 @@ export class FollowService extends Service {
     token: string,
     userToUnfollow: UserDto
   ): Promise<[followerCount: number, followeeCount: number]> {
+    await this.authorizationService.authorize(token);
     await new Promise((f) => setTimeout(f, 500));
 
     const followerCount = await this.getFollowerCount(token, userToUnfollow);

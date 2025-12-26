@@ -1,9 +1,11 @@
 import { AuthToken, FakeData, UserDto, User } from "tweeter-shared";
 import { Service } from "./Service";
+import { AuthorizationService } from "./AuthorizationService";
 
 const bcrypt = require("bcryptjs");
 export class AuthenticationService extends Service {
   public async logout(token: string): Promise<void> {
+    await new AuthorizationService().authorize(token);
     await this.authTokens.deleteToken(token);
   }
 
@@ -14,13 +16,13 @@ export class AuthenticationService extends Service {
     const dbUser = await this.users.getUser(alias);
 
     if (!dbUser) {
-      throw new Error("Invalid alias or password");
+      throw new Error("bad-request: Invalid alias or password");
     }
 
     const valid = await bcrypt.compare(password, dbUser.passwordHash);
 
     if (!valid) {
-      throw new Error("Invalid alias or password");
+      throw new Error("bad-request: Invalid alias or password");
     }
 
     const user = new User(
