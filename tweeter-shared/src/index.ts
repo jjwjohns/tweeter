@@ -33,6 +33,3 @@ export type { NumberResponse } from "./model/net/response/NumberResponse";
 export type { IsFollowerResponse } from "./model/net/response/IsFollowerResponse";
 export type { UserResponse } from "./model/net/response/UserResponse";
 export type { UserAuthResponse } from "./model/net/response/UserAuthResponse";
-
-// Utility exports
-export { FakeData } from "./util/FakeData";

@@ -7,13 +7,13 @@ export interface FollowDAO {
     followee: string,
     limit: number,
     lastKey?: any
-  ): Promise<{ aliases: string[]; lastKey?: any }>;
+  ): Promise<{ aliases: string[]; lastKey?: any; hasMore: boolean }>;
 
   getFollowees(
     follower: string,
     limit: number,
     lastKey?: any
-  ): Promise<{ aliases: string[]; lastKey?: any }>;
+  ): Promise<{ aliases: string[]; lastKey?: any; hasMore: boolean }>;
 
   getAllFollowers(followee: string): Promise<string[]>;
 

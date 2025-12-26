@@ -1,4 +1,4 @@
-import { FakeData, User, UserDto } from "tweeter-shared";
+import { UserDto } from "tweeter-shared";
 import { Service } from "./Service";
 import { AuthorizationService } from "./AuthorizationService";
 
@@ -13,7 +13,20 @@ export class FollowService extends Service {
   ): Promise<[UserDto[], boolean]> {
     await this.authorizationService.authorize(token);
 
-    return this.getFakeData(lastItem, pageSize, userAlias);
+    const { aliases, hasMore } = await this.follows.getFollowees(
+      userAlias,
+      pageSize,
+      lastItem
+        ? {
+            followerAlias: userAlias,
+            followeeAlias: lastItem.alias,
+          }
+        : undefined
+    );
+
+    const dtos = await this.mapAliasesToUserDtos(aliases);
+
+    return [dtos, hasMore];
   }
 
   public async loadMoreFollowers(
@@ -24,7 +37,20 @@ export class FollowService extends Service {
   ): Promise<[UserDto[], boolean]> {
     await this.authorizationService.authorize(token);
 
-    return this.getFakeData(lastItem, pageSize, userAlias);
+    const { aliases, hasMore } = await this.follows.getFollowers(
+      userAlias,
+      pageSize,
+      lastItem
+        ? {
+            followeeAlias: userAlias,
+            followerAlias: lastItem.alias,
+          }
+        : undefined
+    );
+
+    const dtos = await this.mapAliasesToUserDtos(aliases);
+
+    return [dtos, hasMore];
   }
 
   public async getIsFollowerStatus(
@@ -34,19 +60,28 @@ export class FollowService extends Service {
   ): Promise<boolean> {
     await this.authorizationService.authorize(token);
 
-    return FakeData.instance.isFollower();
+    const following = await this.follows.isFollowing(
+      user.alias,
+      selectedUser.alias
+    );
+
+    return following;
   }
 
   public async getFolloweeCount(token: string, user: UserDto): Promise<number> {
     await this.authorizationService.authorize(token);
 
-    return FakeData.instance.getFolloweeCount(user.alias);
+    const followeeCount = await this.follows.getFolloweeCount(user.alias);
+
+    return followeeCount;
   }
 
   public async getFollowerCount(token: string, user: UserDto): Promise<number> {
     await this.authorizationService.authorize(token);
 
-    return FakeData.instance.getFollowerCount(user.alias);
+    const followerCount = await this.follows.getFollowerCount(user.alias);
+
+    return followerCount;
   }
 
   public async follow(
@@ -55,7 +90,10 @@ export class FollowService extends Service {
   ): Promise<[followerCount: number, followeeCount: number]> {
     await this.authorizationService.authorize(token);
 
-    await new Promise((f) => setTimeout(f, 500));
+    await this.follows.follow(
+      (await this.authTokens.getAliasForToken(token))!,
+      userToFollow.alias
+    );
 
     const followerCount = await this.getFollowerCount(token, userToFollow);
     const followeeCount = await this.getFolloweeCount(token, userToFollow);
@@ -69,25 +107,30 @@ export class FollowService extends Service {
   ): Promise<[followerCount: number, followeeCount: number]> {
     await this.authorizationService.authorize(token);
 
-    await new Promise((f) => setTimeout(f, 500));
+    await this.follows.unfollow(
+      (await this.authTokens.getAliasForToken(token))!,
+      userToUnfollow.alias
+    );
 
     const followerCount = await this.getFollowerCount(token, userToUnfollow);
     const followeeCount = await this.getFolloweeCount(token, userToUnfollow);
-
     return [followerCount, followeeCount];
   }
 
-  private async getFakeData(
-    lastItem: UserDto | null,
-    pageSize: number,
-    userAlias: string
-  ): Promise<[UserDto[], boolean]> {
-    const [items, hasMore] = FakeData.instance.getPageOfUsers(
-      User.getUserFromDto(lastItem),
-      pageSize,
-      userAlias
-    );
-    const dtos = items.map((user) => user.dto);
-    return [dtos, hasMore];
+  private async mapAliasesToUserDtos(aliases: string[]): Promise<UserDto[]> {
+    const dtos: UserDto[] = [];
+    for (const alias of aliases) {
+      const user = await this.users.getUser(alias);
+      if (user) {
+        dtos.push({
+          firstName: user.firstName,
+          lastName: user.lastName,
+          alias: user.alias,
+          imageUrl: user.imageUrl,
+        });
+      }
+    }
+
+    return dtos;
   }
 }

@@ -1,49 +1,75 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.FollowService = void 0;
-const tweeter_shared_1 = require("tweeter-shared");
 const Service_1 = require("./Service");
 const AuthorizationService_1 = require("./AuthorizationService");
 class FollowService extends Service_1.Service {
     authorizationService = new AuthorizationService_1.AuthorizationService();
     async loadMoreFollowees(token, userAlias, pageSize, lastItem) {
         await this.authorizationService.authorize(token);
-        return this.getFakeData(lastItem, pageSize, userAlias);
+        const { aliases, hasMore } = await this.follows.getFollowees(userAlias, pageSize, lastItem
+            ? {
+                followerAlias: userAlias,
+                followeeAlias: lastItem.alias,
+            }
+            : undefined);
+        const dtos = await this.mapAliasesToUserDtos(aliases);
+        return [dtos, hasMore];
     }
     async loadMoreFollowers(token, userAlias, pageSize, lastItem) {
         await this.authorizationService.authorize(token);
-        return this.getFakeData(lastItem, pageSize, userAlias);
+        const { aliases, hasMore } = await this.follows.getFollowers(userAlias, pageSize, lastItem
+            ? {
+                followeeAlias: userAlias,
+                followerAlias: lastItem.alias,
+            }
+            : undefined);
+        const dtos = await this.mapAliasesToUserDtos(aliases);
+        return [dtos, hasMore];
     }
     async getIsFollowerStatus(token, user, selectedUser) {
         await this.authorizationService.authorize(token);
-        return tweeter_shared_1.FakeData.instance.isFollower();
+        const following = await this.follows.isFollowing(user.alias, selectedUser.alias);
+        return following;
     }
     async getFolloweeCount(token, user) {
         await this.authorizationService.authorize(token);
-        return tweeter_shared_1.FakeData.instance.getFolloweeCount(user.alias);
+        const followeeCount = await this.follows.getFolloweeCount(user.alias);
+        return followeeCount;
     }
     async getFollowerCount(token, user) {
         await this.authorizationService.authorize(token);
-        return tweeter_shared_1.FakeData.instance.getFollowerCount(user.alias);
+        const followerCount = await this.follows.getFollowerCount(user.alias);
+        return followerCount;
     }
     async follow(token, userToFollow) {
         await this.authorizationService.authorize(token);
-        await new Promise((f) => setTimeout(f, 500));
+        await this.follows.follow((await this.authTokens.getAliasForToken(token)), userToFollow.alias);
         const followerCount = await this.getFollowerCount(token, userToFollow);
         const followeeCount = await this.getFolloweeCount(token, userToFollow);
         return [followerCount, followeeCount];
     }
     async unfollow(token, userToUnfollow) {
         await this.authorizationService.authorize(token);
-        await new Promise((f) => setTimeout(f, 500));
+        await this.follows.unfollow((await this.authTokens.getAliasForToken(token)), userToUnfollow.alias);
         const followerCount = await this.getFollowerCount(token, userToUnfollow);
         const followeeCount = await this.getFolloweeCount(token, userToUnfollow);
         return [followerCount, followeeCount];
     }
-    async getFakeData(lastItem, pageSize, userAlias) {
-        const [items, hasMore] = tweeter_shared_1.FakeData.instance.getPageOfUsers(tweeter_shared_1.User.getUserFromDto(lastItem), pageSize, userAlias);
-        const dtos = items.map((user) => user.dto);
-        return [dtos, hasMore];
+    async mapAliasesToUserDtos(aliases) {
+        const dtos = [];
+        for (const alias of aliases) {
+            const user = await this.users.getUser(alias);
+            if (user) {
+                dtos.push({
+                    firstName: user.firstName,
+                    lastName: user.lastName,
+                    alias: user.alias,
+                    imageUrl: user.imageUrl,
+                });
+            }
+        }
+        return dtos;
     }
 }
 exports.FollowService = FollowService;
