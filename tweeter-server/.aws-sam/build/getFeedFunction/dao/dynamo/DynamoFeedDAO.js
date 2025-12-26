@@ -12,26 +12,29 @@ class DynamoFeedDAO {
     sanitizeLimit(limit) {
         return Math.max(1, Math.min(limit ?? 10, 100));
     }
-    async getFeedPage(alias, limit, lastKey) {
-        if (!alias)
+    async getFeedPage(userAlias, limit, lastKey) {
+        if (!userAlias)
             throw new Error("alias-required");
         const params = {
             TableName: FEED_TABLE,
             KeyConditionExpression: "userAlias = :ua",
             ExpressionAttributeValues: {
-                ":ua": alias,
+                ":ua": userAlias,
             },
             Limit: this.sanitizeLimit(limit),
             ExclusiveStartKey: lastKey,
             ScanIndexForward: false, // most recent first
-            ProjectionExpression: "post, userAlias, timestamp, authorAlias",
+            ProjectionExpression: "post, userAlias, #time, authorAlias",
+            ExpressionAttributeNames: {
+                "#time": "timestamp",
+            },
         };
         const result = await this.docClient.send(new lib_dynamodb_1.QueryCommand(params));
         return {
             statuses: result.Items?.map((item) => ({
                 post: item.post,
-                userAlias: item.authorAlias,
-                timestamp: item.timestamp,
+                authorAlias: item.authorAlias,
+                timestamp: parseInt(item.timestamp),
             })) || [],
             lastKey: result.LastEvaluatedKey,
             hasMore: !!result.LastEvaluatedKey,
@@ -42,9 +45,9 @@ class DynamoFeedDAO {
             PutRequest: {
                 Item: {
                     userAlias: followerAlias,
-                    timestamp: status.timestamp,
+                    timestamp: status.timestamp.toString(),
                     post: status.post,
-                    authorAlias: status.userAlias,
+                    authorAlias: status.authorAlias,
                 },
             },
         }));

@@ -31,10 +31,9 @@ export class DynamoStoryDAO implements StoryDAO {
     const cmd = new PutCommand({
       TableName: STORY_TABLE,
       Item: {
-        alias: authorAlias,
-        timestamp,
+        authorAlias: authorAlias,
+        timestamp: timestamp.toString(),
         post,
-        userAlias: authorAlias, // if your models expect it
       },
     });
 
@@ -42,30 +41,33 @@ export class DynamoStoryDAO implements StoryDAO {
   }
 
   async getStoryPage(
-    alias: string,
+    authorAlias: string,
     limit: number,
     lastKey?: any
   ): Promise<{
     statuses: Array<{
       post: string;
-      userAlias: string;
+      authorAlias: string;
       timestamp: number;
     }>;
     lastKey?: any;
     hasMore: boolean;
   }> {
-    if (!alias) throw new Error("alias-required");
+    if (!authorAlias) throw new Error("alias-required");
 
     const cmd = new QueryCommand({
       TableName: STORY_TABLE,
-      KeyConditionExpression: "alias = :a",
+      KeyConditionExpression: "authorAlias = :a",
       ExpressionAttributeValues: {
-        ":a": alias,
+        ":a": authorAlias,
       },
       Limit: this.sanitizeLimit(limit),
       ExclusiveStartKey: lastKey,
       ScanIndexForward: false, // newest first
-      ProjectionExpression: "post, userAlias, timestamp",
+      ProjectionExpression: "post, authorAlias, #time",
+      ExpressionAttributeNames: {
+        "#time": "timestamp",
+      },
     });
 
     const res = await this.docClient.send(cmd);
@@ -73,8 +75,8 @@ export class DynamoStoryDAO implements StoryDAO {
     const statuses =
       res.Items?.map((i) => ({
         post: i.post as string,
-        userAlias: i.userAlias as string,
-        timestamp: i.timestamp as number,
+        authorAlias: i.authorAlias as string,
+        timestamp: parseInt(i.timestamp as string),
       })) ?? [];
 
     return {

@@ -1,12 +1,12 @@
 export interface FeedDAO {
   getFeedPage(
-    alias: string,
+    userAlias: string,
     limit: number,
     lastKey?: any
   ): Promise<{
     statuses: Array<{
       post: string;
-      userAlias: string;
+      authorAlias: string;
       timestamp: number;
     }>;
     lastKey?: any;
@@ -14,7 +14,7 @@ export interface FeedDAO {
   }>;
 
   addStatusToFeeds(
-    status: { post: string; userAlias: string; timestamp: number },
+    status: { post: string; authorAlias: string; timestamp: number },
     followerAliases: string[]
   ): Promise<void>;
 }

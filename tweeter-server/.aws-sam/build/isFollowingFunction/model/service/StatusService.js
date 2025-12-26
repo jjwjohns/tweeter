@@ -6,23 +6,55 @@ const Service_1 = require("./Service");
 const AuthorizationService_1 = require("./AuthorizationService");
 class StatusService extends Service_1.Service {
     authorizationService = new AuthorizationService_1.AuthorizationService();
-    async loadMoreFeedItems(token, userAlias, pageSize, lastItem) {
+    async loadMoreFeedItems(token, authorAlias, pageSize, lastItem) {
         await this.authorizationService.authorize(token);
-        return this.getFakeData(lastItem, pageSize);
+        const { statuses, lastKey, hasMore } = await this.feeds.getFeedPage(authorAlias, pageSize, lastItem
+            ? {
+                userAlias: authorAlias,
+                timestamp: lastItem.timestamp.toString(),
+            }
+            : undefined);
+        const dtos = await this.mapStatusesToDtos(statuses, "feed");
+        return [dtos, hasMore];
     }
     async loadMoreStoryItems(token, userAlias, pageSize, lastItem) {
         await this.authorizationService.authorize(token);
-        return this.getFakeData(lastItem, pageSize);
+        const { statuses, hasMore } = await this.stories.getStoryPage(userAlias, pageSize, lastItem
+            ? {
+                authorAlias: userAlias,
+                timestamp: lastItem.timestamp.toString(),
+            }
+            : undefined);
+        const dtos = await this.mapStatusesToDtos(statuses, "story");
+        return [dtos, hasMore];
     }
     async postStatus(token, newStatus) {
         await this.authorizationService.authorize(token);
-        await new Promise((f) => setTimeout(f, 500));
+        if (!newStatus?.user?.alias) {
+            throw new Error("bad-request: missing author alias");
+        }
+        const authorAlias = newStatus.user.alias;
+        const timestamp = newStatus.timestamp ?? Date.now();
+        await this.stories.addStatus(authorAlias, newStatus.post, timestamp);
+        const followerAliases = await this.follows.getAllFollowers(authorAlias);
+        await this.feeds.addStatusToFeeds({
+            post: newStatus.post,
+            authorAlias: authorAlias,
+            timestamp,
+        }, followerAliases);
         return { success: true, message: "Status posted successfully." };
     }
-    async getFakeData(lastItem, pageSize) {
-        const [items, hasMore] = tweeter_shared_1.FakeData.instance.getPageOfStatuses(tweeter_shared_1.Status.getStatusFromDto(lastItem), pageSize);
-        const dtos = items.map((status) => status.dto);
-        return [dtos, hasMore];
+    async mapStatusesToDtos(statuses, context) {
+        const dtos = [];
+        for (const status of statuses) {
+            const author = await this.users.getUser(status.authorAlias);
+            if (!author) {
+                throw new Error(`internal-server-error: author not found for ${context} item`);
+            }
+            const statusObj = new tweeter_shared_1.Status(status.post, new tweeter_shared_1.User(author.firstName, author.lastName, author.alias, author.imageUrl), status.timestamp);
+            dtos.push(statusObj.dto);
+        }
+        return dtos;
     }
 }
 exports.StatusService = StatusService;

@@ -20,33 +20,35 @@ class DynamoStoryDAO {
         const cmd = new lib_dynamodb_1.PutCommand({
             TableName: STORY_TABLE,
             Item: {
-                alias: authorAlias,
-                timestamp,
+                authorAlias: authorAlias,
+                timestamp: timestamp.toString(),
                 post,
-                userAlias: authorAlias, // if your models expect it
             },
         });
         await this.docClient.send(cmd);
     }
-    async getStoryPage(alias, limit, lastKey) {
-        if (!alias)
+    async getStoryPage(authorAlias, limit, lastKey) {
+        if (!authorAlias)
             throw new Error("alias-required");
         const cmd = new lib_dynamodb_1.QueryCommand({
             TableName: STORY_TABLE,
-            KeyConditionExpression: "alias = :a",
+            KeyConditionExpression: "authorAlias = :a",
             ExpressionAttributeValues: {
-                ":a": alias,
+                ":a": authorAlias,
             },
             Limit: this.sanitizeLimit(limit),
             ExclusiveStartKey: lastKey,
             ScanIndexForward: false, // newest first
-            ProjectionExpression: "post, userAlias, timestamp",
+            ProjectionExpression: "post, authorAlias, #time",
+            ExpressionAttributeNames: {
+                "#time": "timestamp",
+            },
         });
         const res = await this.docClient.send(cmd);
         const statuses = res.Items?.map((i) => ({
             post: i.post,
-            userAlias: i.userAlias,
-            timestamp: i.timestamp,
+            authorAlias: i.authorAlias,
+            timestamp: parseInt(i.timestamp),
         })) ?? [];
         return {
             statuses,

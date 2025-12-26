@@ -19,8 +19,8 @@ class DynamoFollowDAO {
         }
         const cmd = new lib_dynamodb_1.PutCommand({
             TableName: FOLLOW_TABLE,
-            Item: { follower, followee },
-            ConditionExpression: "attribute_not_exists(followee)",
+            Item: { followerAlias: follower, followeeAlias: followee },
+            ConditionExpression: "attribute_not_exists(followeeAlias)",
         });
         await this.docClient.send(cmd);
     }
@@ -30,8 +30,8 @@ class DynamoFollowDAO {
         }
         const cmd = new lib_dynamodb_1.DeleteCommand({
             TableName: FOLLOW_TABLE,
-            Key: { followee, follower },
-            ConditionExpression: "attribute_exists(followee)",
+            Key: { followeeAlias: followee, followerAlias: follower },
+            ConditionExpression: "attribute_exists(followeeAlias)",
         });
         await this.docClient.send(cmd);
     }
@@ -41,8 +41,8 @@ class DynamoFollowDAO {
         }
         const cmd = new lib_dynamodb_1.GetCommand({
             TableName: FOLLOW_TABLE,
-            Key: { followee, follower },
-            ProjectionExpression: "followee",
+            Key: { followeeAlias: followee, followerAlias: follower },
+            ProjectionExpression: "followeeAlias",
         });
         const res = await this.docClient.send(cmd);
         return !!res.Item;
@@ -52,16 +52,16 @@ class DynamoFollowDAO {
             throw new Error("alias-required");
         const cmd = new lib_dynamodb_1.QueryCommand({
             TableName: FOLLOW_TABLE,
-            KeyConditionExpression: "followee = :f",
+            KeyConditionExpression: "followeeAlias = :f",
             ExpressionAttributeValues: {
                 ":f": followee,
             },
             Limit: this.sanitizeLimit(limit),
             ExclusiveStartKey: lastKey,
-            ProjectionExpression: "follower",
+            ProjectionExpression: "followerAlias",
         });
         const res = await this.docClient.send(cmd);
-        const aliases = res.Items?.map((i) => i.follower) ?? [];
+        const aliases = res.Items?.map((i) => i.followerAlias) ?? [];
         return {
             aliases,
             lastKey: res.LastEvaluatedKey,
@@ -81,7 +81,7 @@ class DynamoFollowDAO {
     async getFollowerCount(followee) {
         const cmd = new lib_dynamodb_1.QueryCommand({
             TableName: FOLLOW_TABLE,
-            KeyConditionExpression: "followee = :f",
+            KeyConditionExpression: "followeeAlias = :f",
             ExpressionAttributeValues: {
                 ":f": followee,
             },
@@ -96,16 +96,16 @@ class DynamoFollowDAO {
         const cmd = new lib_dynamodb_1.QueryCommand({
             TableName: FOLLOW_TABLE,
             IndexName: FOLLOWER_INDEX,
-            KeyConditionExpression: "follower = :f",
+            KeyConditionExpression: "followerAlias = :f",
             ExpressionAttributeValues: {
                 ":f": follower,
             },
             Limit: this.sanitizeLimit(limit),
             ExclusiveStartKey: lastKey,
-            ProjectionExpression: "followee",
+            ProjectionExpression: "followeeAlias",
         });
         const res = await this.docClient.send(cmd);
-        const aliases = res.Items?.map((i) => i.followee) ?? [];
+        const aliases = res.Items?.map((i) => i.followeeAlias) ?? [];
         return {
             aliases,
             lastKey: res.LastEvaluatedKey,
@@ -116,7 +116,7 @@ class DynamoFollowDAO {
         const cmd = new lib_dynamodb_1.QueryCommand({
             TableName: FOLLOW_TABLE,
             IndexName: FOLLOWER_INDEX,
-            KeyConditionExpression: "follower = :f",
+            KeyConditionExpression: "followerAlias = :f",
             ExpressionAttributeValues: {
                 ":f": follower,
             },

@@ -30,8 +30,8 @@ export class DynamoFollowDAO implements FollowDAO {
 
     const cmd = new PutCommand({
       TableName: FOLLOW_TABLE,
-      Item: { follower, followee },
-      ConditionExpression: "attribute_not_exists(followee)",
+      Item: { followerAlias: follower, followeeAlias: followee },
+      ConditionExpression: "attribute_not_exists(followeeAlias)",
     });
 
     await this.docClient.send(cmd);
@@ -44,8 +44,8 @@ export class DynamoFollowDAO implements FollowDAO {
 
     const cmd = new DeleteCommand({
       TableName: FOLLOW_TABLE,
-      Key: { followee, follower },
-      ConditionExpression: "attribute_exists(followee)",
+      Key: { followeeAlias: followee, followerAlias: follower },
+      ConditionExpression: "attribute_exists(followeeAlias)",
     });
 
     await this.docClient.send(cmd);
@@ -58,8 +58,8 @@ export class DynamoFollowDAO implements FollowDAO {
 
     const cmd = new GetCommand({
       TableName: FOLLOW_TABLE,
-      Key: { followee, follower },
-      ProjectionExpression: "followee",
+      Key: { followeeAlias: followee, followerAlias: follower },
+      ProjectionExpression: "followeeAlias",
     });
 
     const res = await this.docClient.send(cmd);
@@ -75,18 +75,18 @@ export class DynamoFollowDAO implements FollowDAO {
 
     const cmd = new QueryCommand({
       TableName: FOLLOW_TABLE,
-      KeyConditionExpression: "followee = :f",
+      KeyConditionExpression: "followeeAlias = :f",
       ExpressionAttributeValues: {
         ":f": followee,
       },
       Limit: this.sanitizeLimit(limit),
       ExclusiveStartKey: lastKey,
-      ProjectionExpression: "follower",
+      ProjectionExpression: "followerAlias",
     });
 
     const res = await this.docClient.send(cmd);
 
-    const aliases = res.Items?.map((i) => i.follower as string) ?? [];
+    const aliases = res.Items?.map((i) => i.followerAlias as string) ?? [];
 
     return {
       aliases,
@@ -111,7 +111,7 @@ export class DynamoFollowDAO implements FollowDAO {
   async getFollowerCount(followee: string): Promise<number> {
     const cmd = new QueryCommand({
       TableName: FOLLOW_TABLE,
-      KeyConditionExpression: "followee = :f",
+      KeyConditionExpression: "followeeAlias = :f",
       ExpressionAttributeValues: {
         ":f": followee,
       },
@@ -132,18 +132,18 @@ export class DynamoFollowDAO implements FollowDAO {
     const cmd = new QueryCommand({
       TableName: FOLLOW_TABLE,
       IndexName: FOLLOWER_INDEX,
-      KeyConditionExpression: "follower = :f",
+      KeyConditionExpression: "followerAlias = :f",
       ExpressionAttributeValues: {
         ":f": follower,
       },
       Limit: this.sanitizeLimit(limit),
       ExclusiveStartKey: lastKey,
-      ProjectionExpression: "followee",
+      ProjectionExpression: "followeeAlias",
     });
 
     const res = await this.docClient.send(cmd);
 
-    const aliases = res.Items?.map((i) => i.followee as string) ?? [];
+    const aliases = res.Items?.map((i) => i.followeeAlias as string) ?? [];
 
     return {
       aliases,
@@ -156,7 +156,7 @@ export class DynamoFollowDAO implements FollowDAO {
     const cmd = new QueryCommand({
       TableName: FOLLOW_TABLE,
       IndexName: FOLLOWER_INDEX,
-      KeyConditionExpression: "follower = :f",
+      KeyConditionExpression: "followerAlias = :f",
       ExpressionAttributeValues: {
         ":f": follower,
       },

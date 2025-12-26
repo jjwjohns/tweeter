@@ -7,19 +7,19 @@ export class StatusService extends Service {
 
   public async loadMoreFeedItems(
     token: string,
-    userAlias: string,
+    authorAlias: string,
     pageSize: number,
     lastItem: StatusDto | null
   ): Promise<[StatusDto[], boolean]> {
     await this.authorizationService.authorize(token);
 
     const { statuses, lastKey, hasMore } = await this.feeds.getFeedPage(
-      userAlias,
+      authorAlias,
       pageSize,
       lastItem
         ? {
-            userAlias,
-            timestamp: lastItem.timestamp,
+            userAlias: authorAlias,
+            timestamp: lastItem.timestamp.toString(),
           }
         : undefined
     );
@@ -42,8 +42,8 @@ export class StatusService extends Service {
       pageSize,
       lastItem
         ? {
-            alias: userAlias,
-            timestamp: lastItem.timestamp,
+            authorAlias: userAlias,
+            timestamp: lastItem.timestamp.toString(),
           }
         : undefined
     );
@@ -66,16 +66,14 @@ export class StatusService extends Service {
     const authorAlias = newStatus.user.alias;
     const timestamp = newStatus.timestamp ?? Date.now();
 
-    // Write to author's story
     await this.stories.addStatus(authorAlias, newStatus.post, timestamp);
 
-    // Fan-out to followers' feeds
     const followerAliases = await this.follows.getAllFollowers(authorAlias);
 
     await this.feeds.addStatusToFeeds(
       {
         post: newStatus.post,
-        userAlias: authorAlias,
+        authorAlias: authorAlias,
         timestamp,
       },
       followerAliases
@@ -85,13 +83,13 @@ export class StatusService extends Service {
   }
 
   private async mapStatusesToDtos(
-    statuses: Array<{ post: string; userAlias: string; timestamp: number }>,
+    statuses: Array<{ post: string; authorAlias: string; timestamp: number }>,
     context: "feed" | "story"
   ): Promise<StatusDto[]> {
     const dtos: StatusDto[] = [];
 
     for (const status of statuses) {
-      const author = await this.users.getUser(status.userAlias);
+      const author = await this.users.getUser(status.authorAlias);
       if (!author) {
         throw new Error(
           `internal-server-error: author not found for ${context} item`
