@@ -8,7 +8,7 @@ import {
 import { getDynamoClient } from "./DynamoClient";
 import { UserDAO } from "../UserDAO";
 
-const USER_TABLE = "User";
+const USER_TABLE = "Users";
 
 type UserRecord = {
   alias: string;

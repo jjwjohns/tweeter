@@ -9,7 +9,7 @@ import { nanoid } from "nanoid";
 import { getDynamoClient } from "./DynamoClient";
 import { AuthTokenDAO } from "../AuthTokenDAO";
 
-const TOKEN_TABLE = "AuthToken";
+const TOKEN_TABLE = "AuthTokens";
 
 type TokenRecord = {
   token: string;

@@ -10,6 +10,7 @@ export interface FeedDAO {
       timestamp: number;
     }>;
     lastKey?: any;
+    hasMore: boolean;
   }>;
 
   addStatusToFeeds(
