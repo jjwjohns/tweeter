@@ -268,6 +268,8 @@ export class ServerFacade {
       UserAuthResponse
     >(request, "/login");
 
+    console.log("LOGIN RAW RESPONSE", response);
+
     if (response.success) {
       return [
         User.getUserFromDto(response.user) as User,

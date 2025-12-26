@@ -2,6 +2,7 @@ import { AuthToken } from "tweeter-shared/dist/model/domain/AuthToken";
 import { User } from "tweeter-shared/dist/model/domain/User";
 import { Service } from "./Service";
 import { ServerFacade } from "../../network/ServerFacade";
+import { Buffer } from "buffer";
 
 export class AuthenticationService implements Service {
   private server = new ServerFacade();
@@ -34,12 +35,19 @@ export class AuthenticationService implements Service {
     userImageBytes: Uint8Array,
     imageFileExtension: string
   ): Promise<[User, AuthToken]> {
+    console.log(
+      "[AuthService Client] Received image bytes length:",
+      userImageBytes.length
+    );
+    const base64 = Buffer.from(userImageBytes).toString("base64");
+    console.log("[AuthService Client] Base64 string length:", base64.length);
+
     const request = {
       firstName: firstName,
       lastName: lastName,
       alias: alias,
       password: password,
-      userImageBytes: userImageBytes,
+      userImageBase64: base64,
       imageFileExtension: imageFileExtension,
     };
 
