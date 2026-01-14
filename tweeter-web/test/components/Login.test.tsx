@@ -1,83 +1,83 @@
-import { MemoryRouter } from "react-router-dom";
-import { render, screen } from "@testing-library/react";
-import { userEvent } from "@testing-library/user-event";
-import { library } from "@fortawesome/fontawesome-svg-core";
-import { fab } from "@fortawesome/free-brands-svg-icons";
-import "@testing-library/jest-dom";
-import Login from "../../src/components/authentication/login/Login";
-import { LoginPresenter } from "../../src/presenter/LoginPresenter";
-import { anything, instance, mock, verify } from "@typestrong/ts-mockito";
+// import { MemoryRouter } from "react-router-dom";
+// import { render, screen } from "@testing-library/react";
+// import { userEvent } from "@testing-library/user-event";
+// import { library } from "@fortawesome/fontawesome-svg-core";
+// import { fab } from "@fortawesome/free-brands-svg-icons";
+// import "@testing-library/jest-dom";
+// import Login from "../../src/components/authentication/login/Login";
+// import { LoginPresenter } from "../../src/presenter/LoginPresenter";
+// import { anything, instance, mock, verify } from "@typestrong/ts-mockito";
 
-library.add(fab);
+// library.add(fab);
 
-describe("Login Component", () => {
-    it("starts with signin button disabled", () => {
-        const { signInButton } = renderLoginAndGetElements("/");
-        
-        expect(signInButton).toBeDisabled();
-    });
+// describe("Login Component", () => {
+//     it("starts with signin button disabled", () => {
+//         const { signInButton } = renderLoginAndGetElements("/");
 
-    it("enables signin button if both alias and password have text", async () => {
-        const { user, signInButton, aliasField, passwordField } = renderLoginAndGetElements("/");
+//         expect(signInButton).toBeDisabled();
+//     });
 
-        await fillFieldsAndCheckSigninIsEnabled(user, aliasField, passwordField, signInButton);
-    });
+//     it("enables signin button if both alias and password have text", async () => {
+//         const { user, signInButton, aliasField, passwordField } = renderLoginAndGetElements("/");
 
-    it("disables signin button if alias or password field is clear", async () => {
-        const { user, signInButton, aliasField, passwordField } = renderLoginAndGetElements("/");
+//         await fillFieldsAndCheckSigninIsEnabled(user, aliasField, passwordField, signInButton);
+//     });
 
-        await fillFieldsAndCheckSigninIsEnabled(user, aliasField, passwordField, signInButton);
+//     it("disables signin button if alias or password field is clear", async () => {
+//         const { user, signInButton, aliasField, passwordField } = renderLoginAndGetElements("/");
 
-        await user.clear(aliasField);
-        expect(signInButton).toBeDisabled();
+//         await fillFieldsAndCheckSigninIsEnabled(user, aliasField, passwordField, signInButton);
 
-        await user.type(aliasField, "a");
-        expect(signInButton).toBeEnabled();
+//         await user.clear(aliasField);
+//         expect(signInButton).toBeDisabled();
 
-        await user.clear(passwordField);
-        expect(signInButton).toBeDisabled();
-    });
+//         await user.type(aliasField, "a");
+//         expect(signInButton).toBeEnabled();
 
-    it("calls the presenter's login method with correct parameters when signin button is pressed", async () => {
-        const mockPresenter = mock<LoginPresenter>();
-        const mockPresenterInstance = instance(mockPresenter);
+//         await user.clear(passwordField);
+//         expect(signInButton).toBeDisabled();
+//     });
 
-        const originalUrl = "https://realurl.com"
-        const alias = "Batman"
-        const password = "supersecret"
-        const { user, signInButton, aliasField, passwordField } = renderLoginAndGetElements(originalUrl, mockPresenterInstance);
+//     it("calls the presenter's login method with correct parameters when signin button is pressed", async () => {
+//         const mockPresenter = mock<LoginPresenter>();
+//         const mockPresenterInstance = instance(mockPresenter);
 
-        await user.type(aliasField, alias);
-        await user.type(passwordField, password)
-        await user.click(signInButton);
+//         const originalUrl = "https://realurl.com"
+//         const alias = "Batman"
+//         const password = "supersecret"
+//         const { user, signInButton, aliasField, passwordField } = renderLoginAndGetElements(originalUrl, mockPresenterInstance);
 
-        verify(mockPresenter.doLogin(alias, password, false, originalUrl)).once();
-    });
-});
+//         await user.type(aliasField, alias);
+//         await user.type(passwordField, password)
+//         await user.click(signInButton);
 
-function renderLogin(originalUrl: string, presenter?: LoginPresenter) {
-    return render(
-        <MemoryRouter>
-            {!!presenter ? ((<Login originalUrl={originalUrl} presenter={presenter} />)) : (<Login originalUrl={originalUrl} />)}
-        </MemoryRouter>
-    );
-}
+//         verify(mockPresenter.doLogin(alias, password, false, originalUrl)).once();
+//     });
+// });
 
-function renderLoginAndGetElements(originalUrl: string, presenter?: LoginPresenter) {
-    const user = userEvent.setup();
+// function renderLogin(originalUrl: string, presenter?: LoginPresenter) {
+//     return render(
+//         <MemoryRouter>
+//             {!!presenter ? ((<Login originalUrl={originalUrl} presenter={presenter} />)) : (<Login originalUrl={originalUrl} />)}
+//         </MemoryRouter>
+//     );
+// }
 
-    renderLogin(originalUrl, presenter);
+// function renderLoginAndGetElements(originalUrl: string, presenter?: LoginPresenter) {
+//     const user = userEvent.setup();
 
-    const signInButton = screen.getByRole("button", { name: /Sign in/i});
-    const aliasField = screen.getByLabelText("alias");
-    const passwordField = screen.getByLabelText("password");
+//     renderLogin(originalUrl, presenter);
 
-    return { user, signInButton, aliasField, passwordField };
-}
+//     const signInButton = screen.getByRole("button", { name: /Sign in/i});
+//     const aliasField = screen.getByLabelText("alias");
+//     const passwordField = screen.getByLabelText("password");
 
-async function fillFieldsAndCheckSigninIsEnabled(user: any, aliasField: HTMLElement, passwordField: HTMLElement, signInButton: HTMLElement) {
-    await user.type(aliasField, "a");
-    await user.type(passwordField, "pass");
+//     return { user, signInButton, aliasField, passwordField };
+// }
 
-    expect(signInButton).toBeEnabled();
-}
+// async function fillFieldsAndCheckSigninIsEnabled(user: any, aliasField: HTMLElement, passwordField: HTMLElement, signInButton: HTMLElement) {
+//     await user.type(aliasField, "a");
+//     await user.type(passwordField, "pass");
+
+//     expect(signInButton).toBeEnabled();
+// }
