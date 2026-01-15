@@ -511,6 +511,9 @@ Resources:
             RestApiId: !Ref tweeterApi
             Path: /poststatus
             Method: POST
+      Environment:
+        Variables:
+          POST_STATUS_QUEUE_URL: "https://sqs.us-east-1.amazonaws.com/941377144572/PostStatusQueue"
 
   getStoryFunction:
     Type: AWS::Serverless::Function
@@ -548,19 +551,41 @@ Resources:
   # SQS Queue Lambda Functions  (This will become relevant in Milestone 4. For M3, leave this section commented out.)
   #
 
-  #   MyQueueFunction:
-  #     Type: AWS::Serverless::Function
-  #     Properties:
-  #       FunctionName: MyQueueFunction
-  #       Handler: <PATH TO LAMBDA HANDLER>
-  #       Policies: *commonPolicies
-  #       Events:
-  #         SQSTrigger:
-  #           Type: SQS
-  #           Properties:
-  #             Queue: !GetAtt MyQueue.Arn
-  #             Enabled: true
-
+  updateFeedsFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: updateFeedsFunction
+      Handler: lambda/status/UpdateFeedsLambda.handler
+      Policies:
+        - AWSLambdaBasicExecutionRole
+        - CloudWatchFullAccess
+        - AmazonDynamoDBFullAccess
+        - AmazonSQSFullAccess
+      Environment:
+        Variables:
+          FEED_WRITE_QUEUE_URL: "https://sqs.us-east-1.amazonaws.com/941377144572/FeedWriteQueue"
+      Events:
+        PostStatusQueueEvent:
+          Type: SQS
+          Properties:
+            Queue: "arn:aws:sqs:us-east-1:941377144572:PostStatusQueue"
+            BatchSize: 1
+  writeFeedBatchFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: writeFeedBatchFunction
+      Handler: lambda/status/WriteFeedBatchLambda.handler
+      Policies:
+        - AWSLambdaBasicExecutionRole
+        - CloudWatchFullAccess
+        - AmazonDynamoDBFullAccess
+        - AmazonSQSFullAccess
+      Events:
+        FeedWriteQueueEvent:
+          Type: SQS
+          Properties:
+            Queue: "arn:aws:sqs:us-east-1:941377144572:FeedWriteQueue"
+            BatchSize: 1
   #
   # DynamoDB Tables
   #
