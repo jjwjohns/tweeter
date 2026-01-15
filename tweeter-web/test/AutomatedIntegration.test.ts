@@ -9,22 +9,17 @@
  * 4) Retrieve story and verify new status is appended + details correct
  */
 
-import {
-  anything,
-  instance,
-  mock,
-  spy,
-  verify,
-  when,
-  capture,
-} from "ts-mockito";
+import { instance, mock, spy, verify } from "ts-mockito";
 import { ServerFacade } from "../src/network/ServerFacade"; // adjust path
-import { AuthToken, Status, User } from "tweeter-shared"; // adjust if your shared import differs
+import { AuthToken, User } from "tweeter-shared"; // adjust if your shared import differs
 
 // ---- Adjust these imports to match your project ----
 import { StatusService } from "../src/model/service/StatusService"; // client-side service the presenter uses
 import { PostStatusPresenter } from "../src/presenter/PostStatusPresenter"; // or whatever your presenter class is
 import { PostStatusView } from "../src/presenter/PostStatusPresenter"; // interface type your presenter calls
+
+import fetch from "cross-fetch";
+(global as any).fetch = fetch;
 
 describe("Milestone 4B - Post Status Integration Test", () => {
   let serverFacadeSpy: ServerFacade;
@@ -38,7 +33,7 @@ describe("Milestone 4B - Post Status Integration Test", () => {
   let testUser: User;
 
   beforeEach(() => {
-    const serverFacade = new ServerFacade();
+    const serverFacade: ServerFacade = new ServerFacade();
     serverFacadeSpy = spy(serverFacade);
 
     statusService = new StatusService(serverFacade);
@@ -48,33 +43,52 @@ describe("Milestone 4B - Post Status Integration Test", () => {
     presenter = new PostStatusPresenter(instance(mockView), statusService);
   });
 
+  afterEach(async () => {
+    jest.clearAllMocks();
+
+    if (authToken && testUser) {
+      const logoutRequest = {
+        alias: testUser.alias,
+        password: "password",
+        token: authToken.token,
+      };
+      await instance(serverFacadeSpy).logout(logoutRequest);
+    }
+  }, 10000);
+
   it("should append a posted status to the user's story", async () => {
-    expect(true).toBe(true); // Placeholder to avoid empty test error
-    /**
-     * ------------------------------------------------------------
-     * STEP 1) Login a user (ServerFacade or client-side service)
-     * ------------------------------------------------------------
-     *
-    /**
-     * ------------------------------------------------------------
-     * STEP 2) Post a status from the user using the Presenter
-     * ------------------------------------------------------------
-     */
+    // Step 1: Login
+    const loginRequest = {
+      alias: "@test",
+      password: "test",
+    };
 
-    /**
-     * ------------------------------------------------------------
-     * STEP 3) Verify that "Successfully Posted!" was displayed
-     * ------------------------------------------------------------
-    /**
-     * ------------------------------------------------------------
-     * STEP 4) Retrieve story and verify new status was appended
-     * ------------------------------------------------------------
-    */
+    const loginResponse = await instance(serverFacadeSpy).login(loginRequest);
+    authToken = loginResponse[1];
+    testUser = loginResponse[0];
+    let start = Date.now();
 
-    // TODO: Assertions (examples)
-    // expect(storyResponse.statuses.length).toBeGreaterThan(0);
-    // expect(storyResponse.statuses[0].post).toBe(postText);
-    // expect(storyResponse.statuses[0].user.alias).toBe(testUser.alias);
-    // expect(storyResponse.statuses[0].timestamp).toBe(timestamp);
-  });
+    expect(testUser).toBeDefined();
+    expect(authToken).toBeDefined();
+    verify(serverFacadeSpy.login(loginRequest)).once();
+
+    // Step 2: Post Status
+    await presenter.submitPost("Hello from Milestone 4B!", testUser, authToken);
+
+    // Step 3: Verify "Successfully Posted!" was displayed
+    verify(mockView.displayInfoMessage("Status posted!", 2000)).once();
+
+    // Step 4: Retrieve Story and verify new status
+    const storyResponse = await instance(serverFacadeSpy).getMoreStoryItems({
+      token: authToken.token,
+      userAlias: testUser.alias,
+      pageSize: 10,
+      lastItem: null,
+    });
+
+    expect(storyResponse[0].length).toBeGreaterThan(0);
+    expect(storyResponse[0][0].post).toBe("Hello from Milestone 4B!");
+    expect(storyResponse[0][0].user.alias).toBe(testUser.alias);
+    expect(storyResponse[0][0].timestamp).toBeGreaterThanOrEqual(start);
+  }, 15000);
 });
