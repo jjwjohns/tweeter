@@ -115,26 +115,14 @@ export class StatusService extends Service {
     let lastFollowerAlias: string | undefined = undefined;
     let hasMore = true;
 
-    const pageSize = 1000; // follower page size (not 25)
+    const pageSize = 1000;
 
     while (hasMore) {
-      /**
-       * You need a DAO method like:
-       *   getFollowersPage(followeeAlias, limit, lastFollowerAlias?)
-       *
-       * It should return:
-       *   { followerAliases: string[], hasMore: boolean }
-       *
-       * If your DAO returns follower objects instead, map them here.
-       */
       const page = await this.follows.getFollowersPage(
         authorAlias,
         pageSize,
         lastFollowerAlias
       );
-
-      // Example expected shape:
-      // page = { followerAliases: string[], hasMore: boolean }
 
       followerAliases.push(...page.followerAliases);
       hasMore = page.hasMore;
@@ -169,7 +157,6 @@ export class StatusService extends Service {
       sendPromises.push(feedWriteQueue.sendFeedWriteMessage(msg));
     }
 
-    // Parallel sends is fine for ~400 messages (10k followers / 25)
     await Promise.all(sendPromises);
   }
 
@@ -183,26 +170,12 @@ export class StatusService extends Service {
     }
 
     if (!followerAliases || followerAliases.length === 0) {
-      return; // nothing to write
+      return;
     }
 
-    // Safety: should always be <= 25
-    if (followerAliases.length > 25) {
-      throw new Error(
-        "bad-request: writeFeedBatch received more than 25 followers"
-      );
-    }
-
-    /**
-     * Your feed DAO should ideally expose a method like:
-     *    addFeedBatch(items: Array<{ userAlias, timestamp, authorAlias, post }>)
-     * or something similar.
-     *
-     * Build whatever shape your feed table expects.
-     */
     const feedItems = followerAliases.map((followerAlias) => ({
-      userAlias: followerAlias, // partition key for feed table
-      timestamp, // sort key
+      userAlias: followerAlias,
+      timestamp,
       authorAlias,
       post,
     }));

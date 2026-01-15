@@ -1,10 +1,5 @@
 import { SQSClient, SendMessageCommand } from "@aws-sdk/client-sqs";
-
-export type PostStatusMessage = {
-  authorAlias: string;
-  timestamp: number;
-  post: string;
-};
+import { PostStatusQueueMessage } from "../../../models/PostStatusQueueMessage";
 
 export class PostStatusQueueClient {
   private sqs: SQSClient;
@@ -22,7 +17,7 @@ export class PostStatusQueueClient {
   }
 
   public async sendPostStatusMessage(
-    message: PostStatusMessage
+    message: PostStatusQueueMessage
   ): Promise<void> {
     await this.sqs.send(
       new SendMessageCommand({
