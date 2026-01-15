@@ -9,11 +9,11 @@ export interface PostStatusView extends MessageView {
   getCurrentUser: () => User | null;
   getAuthToken: () => AuthToken | null;
 }
-
 export class PostStatusPresenter extends Presenter<PostStatusView> {
-  private _service = new StatusService();
-
-  public constructor(view: PostStatusView) {
+  public constructor(
+    view: PostStatusView,
+    private _service: StatusService = new StatusService()
+  ) {
     super(view);
   }
 

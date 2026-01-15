@@ -64,6 +64,7 @@
     "jest-dom": "^4.0.0",
     "jest-environment-jsdom": "^29.7.0",
     "ts-jest": "^29.4.5",
+    "ts-mockito": "^2.6.1",
     "vite": "^4.3.9",
     "vite-plugin-svgr": "^3.2.0",
     "vite-tsconfig-paths": "^4.2.0"

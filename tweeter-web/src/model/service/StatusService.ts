@@ -3,7 +3,7 @@ import { Service } from "./Service";
 import { ServerFacade } from "../../network/ServerFacade";
 
 export class StatusService implements Service {
-  private server = new ServerFacade();
+  constructor(private server: ServerFacade = new ServerFacade()) {}
 
   public async loadMoreFeedItems(
     authToken: AuthToken,
