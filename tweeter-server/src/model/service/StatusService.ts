@@ -1,6 +1,7 @@
 import { Status, StatusDto, TweeterResponse, User } from "tweeter-shared";
 import { Service } from "./Service";
 import { AuthorizationService } from "./AuthorizationService";
+import { PostStatusQueueClient } from "./sqs/PostStatusQueueClient";
 
 export class StatusService extends Service {
   private authorizationService = new AuthorizationService();
@@ -68,18 +69,27 @@ export class StatusService extends Service {
 
     await this.stories.addStatus(authorAlias, newStatus.post, timestamp);
 
-    const followerAliases = await this.follows.getAllFollowers(authorAlias);
-
-    await this.feeds.addStatusToFeeds(
-      {
-        post: newStatus.post,
-        authorAlias: authorAlias,
-        timestamp,
-      },
-      followerAliases
-    );
+    const postStatusQueue = new PostStatusQueueClient();
+    await postStatusQueue.sendPostStatusMessage({
+      authorAlias,
+      timestamp,
+      post: newStatus.post,
+    });
 
     return { success: true, message: "Status posted successfully." };
+
+    const followerAliases = await this.follows.getAllFollowers(authorAlias);
+
+    // await this.feeds.addStatusToFeeds(
+    //   {
+    //     post: newStatus.post,
+    //     authorAlias: authorAlias,
+    //     timestamp,
+    //   },
+    //   followerAliases
+    // );
+
+    // return { success: true, message: "Status posted successfully." };
   }
 
   private async mapStatusesToDtos(
