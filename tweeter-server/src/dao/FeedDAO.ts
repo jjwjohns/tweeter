@@ -17,4 +17,13 @@ export interface FeedDAO {
     status: { post: string; authorAlias: string; timestamp: number },
     followerAliases: string[]
   ): Promise<void>;
+
+  addFeedBatch(
+    feedItems: Array<{
+      userAlias: string;
+      timestamp: number;
+      authorAlias: string;
+      post: string;
+    }>
+  ): Promise<void>;
 }

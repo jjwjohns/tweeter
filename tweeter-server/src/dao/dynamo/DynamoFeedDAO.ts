@@ -91,4 +91,41 @@ export class DynamoFeedDAO implements FeedDAO {
       await this.docClient.send(new BatchWriteCommand(params));
     }
   }
+
+  async addFeedBatch(
+    feedItems: Array<{
+      userAlias: string;
+      timestamp: number;
+      authorAlias: string;
+      post: string;
+    }>
+  ): Promise<void> {
+    if (!feedItems || feedItems.length === 0) {
+      return; // nothing to write
+    }
+
+    // Safety check: should never exceed 25 per batch from StatusService
+    if (feedItems.length > 25) {
+      throw new Error("bad-request: addFeedBatch cannot exceed 25 items");
+    }
+
+    const putRequests = feedItems.map((item) => ({
+      PutRequest: {
+        Item: {
+          userAlias: item.userAlias,
+          timestamp: item.timestamp.toString(),
+          post: item.post,
+          authorAlias: item.authorAlias,
+        },
+      },
+    }));
+
+    const params = {
+      RequestItems: {
+        [FEED_TABLE]: putRequests,
+      },
+    };
+
+    await this.docClient.send(new BatchWriteCommand(params));
+  }
 }

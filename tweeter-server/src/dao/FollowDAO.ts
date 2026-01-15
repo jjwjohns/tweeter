@@ -9,6 +9,12 @@ export interface FollowDAO {
     lastKey?: any
   ): Promise<{ aliases: string[]; lastKey?: any; hasMore: boolean }>;
 
+  getFollowersPage(
+    followee: string,
+    limit: number,
+    lastFollowerAlias?: string
+  ): Promise<{ followerAliases: string[]; hasMore: boolean }>;
+
   getFollowees(
     follower: string,
     limit: number,

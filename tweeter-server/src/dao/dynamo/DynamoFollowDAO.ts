@@ -95,6 +95,36 @@ export class DynamoFollowDAO implements FollowDAO {
     };
   }
 
+  async getFollowersPage(
+    followee: string,
+    limit: number,
+    lastFollowerAlias?: string
+  ): Promise<{ followerAliases: string[]; hasMore: boolean }> {
+    if (!followee) throw new Error("alias-required");
+
+    const cmd = new QueryCommand({
+      TableName: FOLLOW_TABLE,
+      KeyConditionExpression: "followeeAlias = :f",
+      ExpressionAttributeValues: {
+        ":f": followee,
+      },
+      Limit: this.sanitizeLimit(limit),
+      ExclusiveStartKey: lastFollowerAlias
+        ? { followeeAlias: followee, followerAlias: lastFollowerAlias }
+        : undefined,
+      ProjectionExpression: "followerAlias",
+    });
+
+    const res = await this.docClient.send(cmd);
+
+    const followerAliases = res.Items?.map((i) => i.followerAlias as string) ?? [];
+
+    return {
+      followerAliases,
+      hasMore: !!res.LastEvaluatedKey,
+    };
+  }
+
   async getAllFollowers(followee: string): Promise<string[]> {
     let followers: string[] = [];
     let lastKey: any = undefined;
